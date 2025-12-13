@@ -11,14 +11,14 @@ export default () => {
    const [crew] = useState<Number>(0)
    return (
       <section className="overflow-hidden h-screen">
-         <div className="flex items-center justify-between px-4 lg:pl-11 pt-4 mb-3 lg:mb-20">
+         <div className="flex items-center justify-between px-4 lg:pl-11 pt-4 mb-5 lg:mb-20">
             <h1 className="font-poppins text-2xl pl-2.5 py-[5px]">{userID}</h1>
             <span className="w-8 h-8 rounded-full bg-[#D9D9D9] flex items-center justify-center">
                <Icon icon="iconamoon:profile-fill" className="text-2xl text-[#0000004D] leading-tight" />
             </span>
          </div>
 
-         <aside className="flex justify-between mx-4 py-3 lg:py-[35px] px-4 rounded-lg bg-[linear-gradient(153.15deg,rgba(255,255,255,0.4)-49.92%,rgba(255,255,255,0)103.38%)] h-[120px]">
+         <aside className="flex justify-between mx-4 py-3 lg:py-[35px] px-4 rounded-lg bg-[linear-gradient(153.15deg,rgba(255,255,255,0.4)-49.92%,rgba(255,255,255,0)103.38%)]">
             <div className="flex flex-col gap-2">
 
                {/* Total Assets */}
@@ -28,7 +28,7 @@ export default () => {
                </div>
 
                {/* Total balance */}
-               <h1 className="font-inria-sans font-bold leading-tight text-5xl lg:text-6xl">{balance.toLocaleString('en-US', { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 })}</h1>
+               <h1 className="font-inria-sans font-bold leading-tight text-4xl lg:text-6xl">{balance.toLocaleString('en-US', { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 })}</h1>
 
                {/* Mining Details */}
                <div className="flex gap-4">
@@ -43,9 +43,9 @@ export default () => {
                   </div>
                </div>
             </div>
-            <div>
-               <div className="w-full h-[158px] relative">
-                  <Image src={gemImage} alt="alt" className="w-full object-cover min-w-[145px] -mr-9 -mt-10 drop-shadow-xl drop-shadow-[#E6A500]" />
+            <div className="relative w-[145px]">
+               <div className="absolute -top-11 -right-8">
+                  <Image src={gemImage} alt="alt" className="object-cover w-[145px] drop-shadow-xl drop-shadow-[#E6A500]" />
                </div>
             </div>
          </aside>
