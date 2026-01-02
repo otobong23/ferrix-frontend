@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inria_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 

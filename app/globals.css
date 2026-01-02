@@ -3,17 +3,23 @@
 :root {
   --background: rgba(29, 29, 31, 1);
   --foreground: rgba(245, 245, 247, 1);
-  --background-lg: linear-gradient(
-    247.38deg,
-    rgba(230, 165, 0, 0) 47.02%,
-    rgba(230, 165, 0, 0.5) 100%
-  );
+  --background-lg: linear-gradient(247.38deg,
+      rgba(230, 165, 0, 0) 47.02%,
+      rgba(230, 165, 0, 0.5) 100%);
 }
 
 
 @theme inline {
   --font-inria-sans: var(--font-inria-sans), sans-serif;
   --font-poppins: var(--font-poppins), sans-serif;
+
+  --color-investor-gold: #E6A500;
+}
+
+@layer components {
+  .theme-button-effect {
+    @apply active:scale-75 hover:shadow-lg transition-all duration-200 ease-in-out;
+  }
 }
 
 
@@ -23,7 +29,13 @@ body {
   font-family: var(--font-poppins), sans-serif;
 }
 
-
+.border-gradient {
+  border: 0.8px solid;
+  backdrop-filter: blur(42px);
+  border-image-source: radial-gradient(86.82% 86.82% at 50% 0.91%, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(50% 50% at 50% 100%, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%);
+  @apply rounded-sm scale-100 hover:scale-95 active:scale-75 transition-all duration-300;
+}
 
 
 /* @media (prefers-color-scheme: dark) {

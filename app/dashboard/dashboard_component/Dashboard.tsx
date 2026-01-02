@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Icon } from "@iconify-icon/react"
 import gemImage from "@/assets/imgs/gem.png"
 import Image from "next/image";
+import { DashboardMenus } from "@/constant/Dasboard.constant";
+import Link from "next/link";
 
 export default () => {
    const [userID] = useState<String>("UserID24");
@@ -13,9 +15,9 @@ export default () => {
       <section className="overflow-hidden h-screen">
          <div className="flex items-center justify-between px-4 lg:pl-11 pt-4 mb-5 lg:mb-20">
             <h1 className="font-poppins text-2xl pl-2.5 py-[5px]">{userID}</h1>
-            <span className="w-8 h-8 rounded-full bg-[#D9D9D9] flex items-center justify-center">
+            <button className="w-8 h-8 rounded-full bg-[#D9D9D9] flex items-center justify-center">
                <Icon icon="iconamoon:profile-fill" className="text-2xl text-[#0000004D] leading-tight" />
-            </span>
+            </button>
          </div>
 
          <aside className="flex justify-between mx-4 py-3 lg:py-[35px] px-4 rounded-lg bg-[linear-gradient(153.15deg,rgba(255,255,255,0.4)-49.92%,rgba(255,255,255,0)103.38%)]">
@@ -44,11 +46,45 @@ export default () => {
                </div>
             </div>
             <div className="relative w-[145px]">
-               <div className="absolute -top-11 -right-8">
-                  <Image src={gemImage} alt="alt" className="object-cover w-[145px] drop-shadow-xl drop-shadow-[#E6A500]" />
+               <div className="absolute -top-10 -right-8">
+                  <Image src={gemImage} alt="alt" className="object-cover w-[135px] drop-shadow-xl drop-shadow-investor-gold" />
                </div>
             </div>
          </aside>
+
+         <p className="flex items-center text-xs md:text-lg text-black mx-4 mt-5 bg-investor-gold px-[19px] py-3 rounded-lg mb-7 md:mb-10">
+            <Icon icon="bi:shield-fill" className="text-[15px] lg:text-[21px] mr-2" />
+            A strong team has many players
+
+            <button className="flex justify-center items-center ml-auto text-[#F5F5F7] text-nowrap bg-[linear-gradient(158.16deg,rgba(255,255,255,0.4)3.02%,rgba(145,145,145,0)134.13%)] p-[5px] md:p-[8px_15px] border-gradient rounded-sm">
+               Invite Now
+               <Icon icon="iconoir:nav-arrow-right" />
+            </button>
+         </p>
+
+         <div className="grid grid-cols-4 md:grid-cols-8 px-4 justify-items-center gap-y-11 mb-8 md:mb-10">
+            {
+               DashboardMenus.map(menu => (
+                  <Link href={menu.link} key={menu.icon} className="flex flex-col items-center">
+                     <Icon icon={menu.icon} className="text-[#9EA4AA] text-[30px]" />
+                     <p className="text-xs">{menu.title}</p>
+                  </Link>
+               ))
+            }
+         </div>
+
+         <div className="bg-[#44474F] rounded-lg p-2 md:px-7 md:py-3 mx-4 flex justify-between">
+            <button className="px-[15px] py-2 text-lg text-[#F5F5F7] rounded-sm bg-investor-gold theme-button-effect">Popular</button>
+            <button className="px-[15px] py-2 text-lg text-[#F5F5F7] bg-[#F5F5F7]/7 rounded-sm flex items-center theme-button-effect">
+               <span>See all</span>
+               <Icon icon="iconoir:nav-arrow-right" />
+            </button>
+         </div>
+
+         <div className="card_section">
+            
+         </div>
       </section>
    )
 }
+
