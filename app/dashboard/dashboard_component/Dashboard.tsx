@@ -5,6 +5,8 @@ import gemImage from "@/assets/imgs/gem.png"
 import Image from "next/image";
 import { DashboardMenus } from "@/constant/Dasboard.constant";
 import Link from "next/link";
+import { products } from "@/constant/product.constant";
+
 
 export default () => {
    const [userID] = useState<String>("UserID24");
@@ -12,7 +14,7 @@ export default () => {
    const [miningAsset] = useState<Number>(360000)
    const [crew] = useState<Number>(0)
    return (
-      <section className="overflow-hidden h-screen">
+      <section className="overflow-x-hidden">
          <div className="flex items-center justify-between px-4 lg:pl-11 pt-4 mb-5 lg:mb-20">
             <h1 className="font-poppins text-2xl pl-2.5 py-[5px]">{userID}</h1>
             <button className="w-8 h-8 rounded-full bg-[#D9D9D9] flex items-center justify-center">
@@ -56,7 +58,7 @@ export default () => {
             <Icon icon="bi:shield-fill" className="text-[15px] lg:text-[21px] mr-2" />
             A strong team has many players
 
-            <button className="flex justify-center items-center ml-auto text-[#F5F5F7] text-nowrap bg-[linear-gradient(158.16deg,rgba(255,255,255,0.4)3.02%,rgba(145,145,145,0)134.13%)] p-[5px] md:p-[8px_15px] border-gradient rounded-sm">
+            <button className="flex justify-center items-center ml-auto text-[#F5F5F7] text-nowrap bg-[linear-gradient(158.16deg,rgba(255,255,255,0.4)3.02%,rgba(145,145,145,0)134.13%)] p-[5px] md:p-[8px_15px] border-gradient rounded-sm theme-button-effect">
                Invite Now
                <Icon icon="iconoir:nav-arrow-right" />
             </button>
@@ -65,7 +67,7 @@ export default () => {
          <div className="grid grid-cols-4 md:grid-cols-8 px-4 justify-items-center gap-y-11 mb-8 md:mb-10">
             {
                DashboardMenus.map(menu => (
-                  <Link href={menu.link} key={menu.icon} className="flex flex-col items-center">
+                  <Link href={menu.link} key={menu.icon} className="flex flex-col items-center theme-button-effect">
                      <Icon icon={menu.icon} className="text-[#9EA4AA] text-[30px]" />
                      <p className="text-xs">{menu.title}</p>
                   </Link>
@@ -73,7 +75,7 @@ export default () => {
             }
          </div>
 
-         <div className="bg-[#44474F] rounded-lg p-2 md:px-7 md:py-3 mx-4 flex justify-between">
+         <div className="bg-[#44474F] rounded-lg p-2 md:px-7 md:py-3 mx-4 flex justify-between mb-[25px] md:mb-8">
             <button className="px-[15px] py-2 text-lg text-[#F5F5F7] rounded-sm bg-investor-gold theme-button-effect">Popular</button>
             <button className="px-[15px] py-2 text-lg text-[#F5F5F7] bg-[#F5F5F7]/7 rounded-sm flex items-center theme-button-effect">
                <span>See all</span>
@@ -81,9 +83,45 @@ export default () => {
             </button>
          </div>
 
-         <div className="card_section">
-            
+         <div className="card_section mx-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {
+               products.map((product, index) => (
+                  <div className={`card flex border-[#FFFFFF]/40 border rounded-lg py-4`} key={product + '_' + index}>
+                     <div className="card_image">
+                        <Image src={product.image} alt="f1_image" className="object-cover" />
+                     </div>
+
+                     <div className="card_content">
+                        <h1 className="font-bold text-white font-inria-sans text-2xl">{product.name}</h1>
+                        <h2 className="text-sm bg-[#50535B] inline-block rounded-sm p-1">
+                           <span className="bg-linear-to-br from-[#4DB6AC] to-investor-gold bg-clip-text text-transparent">{product.package_level}</span>
+                        </h2>
+                        <p className="text-sm font-bold text-[#F5F5F7]">{product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
+                        <p className="text-sm text-[#F5F5F7]">
+                           <span>Contract Duration:</span>
+                           <span className="font-bold ml-1">{product.contract_duration_in_days}Days</span>
+                        </p>
+                        <p className="text-sm text-[#F5F5F7]">
+                           <span>Daily Rate:</span>
+                           <span className="font-bold ml-1">{product.daily_rate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
+                        </p>
+                        <p className="text-sm text-[#F5F5F7]">
+                           <span>Total Revenue:</span>
+                           <span className="font-bold ml-1">{product.total_revenue.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
+                        </p>
+                     </div>
+
+                     <div className="card_activity ml-auto mr-5 flex items-end">
+                        <button className="px-[15px] py-[5px] text-[#1D1D1F] text-sm rounded-sm bg-linear-to-br from-[#4DB6AC] to-investor-gold theme-button-effect">
+                           Activate
+                        </button>
+                     </div>
+                  </div>
+               ))
+            }
          </div>
+
+         <p className="mx-7 my-3">2025, Ferrix co. Copyright</p>
       </section>
    )
 }

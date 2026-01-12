@@ -37,6 +37,27 @@ body {
   @apply rounded-sm scale-100 hover:scale-95 active:scale-75 transition-all duration-300;
 }
 
+.card {
+  background-image: url('/rectangle.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.navbar-glow::before {
+  content: "";
+  position: absolute;
+  inset: -40px 0 0 0;
+  z-index: -1;
+
+  background: radial-gradient(
+    ellipse at top center,
+    rgba(230, 165, 0, 0.4) 0%,
+    rgba(230, 165, 0, 0.2) 35%,
+    rgba(230, 165, 0, 0.08) 55%,
+    transparent 75%
+  );
+}
 
 /* @media (prefers-color-scheme: dark) {
   :root {
