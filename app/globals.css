@@ -18,7 +18,10 @@
 
 @layer components {
   .theme-button-effect {
-    @apply active:scale-75 hover:shadow-lg transition-all duration-200 ease-in-out;
+    @apply active:scale-75 hover:shadow-lg transition-all duration-200 ease-in-out cursor-pointer;
+  }
+  .theme-button-effect-no-shadow {
+    @apply active:scale-75 transition-all duration-200 ease-in-out cursor-pointer;
   }
 }
 

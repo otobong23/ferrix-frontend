@@ -1,5 +1,5 @@
 
-import Dashboard from './dashboard_component/Dashboard'
+import Dashboard from './Dashboard'
 
 const page = () => {
   return (

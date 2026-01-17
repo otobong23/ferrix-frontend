@@ -1,6 +1,7 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Sidebar from "./Sidebar";
 
 const LayoutWrapper = ({
    children,
@@ -13,13 +14,19 @@ const LayoutWrapper = ({
       setContentPaddingBottom(navRef.current?.offsetHeight || 0);
    })
    return (
-      <div className="min-h-screen relative">
+      <div className="min-h-screen relative lg:flex lg:gap-11">
+
+         <div className="hidden lg:block lg:w-80 relative">
+            <Sidebar />
+         </div>
+
          <div style={{
             paddingBottom: contentPaddingBottom
-         }} className="xl:pb-0!">
+         }} className="xl:pb-0! lg:basis-2/3 mx-auto">
             {children}
          </div>
-         <div className="fixed -bottom-px left-0 right-0 z-50" ref={navRef}>
+         
+         <div className="fixed -bottom-px left-0 right-0 z-50 lg:hidden" ref={navRef}>
             <Navbar />
          </div>
       </div>
