@@ -49,7 +49,7 @@ const Plans = () => {
             }
          </div>
 
-         <div className='flex gap-[7px] px-4 pb-[15px]'>
+         <div className='flex gap-[7px] px-4 pb-[15px] overflow-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
             {
                ['all', 'iron', 'bronze', 'copper'].map((item, index) => (
                   <button onClick={() => handleFilter(item)} key={item + '_' + index} className={`px-[15px] py-1 rounded-[20px] transition-all duration-300 theme-button-effect ${isActiveFilter(item) ? 'bg-[#9EA4AA] text-[#F5F5F7]' : 'bg-[#44474F] text-[#9EA4AA]'}`}>

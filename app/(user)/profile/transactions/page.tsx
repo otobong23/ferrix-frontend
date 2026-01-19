@@ -1,9 +1,8 @@
 import React from 'react'
+import Transactions from './Transactions'
 
 const page = () => {
-  return (
-    <div>page</div>
-  )
+  return <Transactions />
 }
 
 export default page

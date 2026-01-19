@@ -18,7 +18,11 @@ const Team = () => {
       {
          userId: '9847266',
          level: 1
-      }
+      },
+      {
+         userId: '9847267',
+         level: 2
+      },
    ]
    return (
       <div className=''>
@@ -51,7 +55,6 @@ const Team = () => {
                   </div>
                ))
             }
-
          </div>
 
          <div className='px-4 mb-8'>
@@ -90,14 +93,14 @@ const Team = () => {
                {
                   members.map(member => (
                      <div key={member.userId} className='py-5 px-6 flex items-center gap-3 bg-[#F5F5F7]/7 rounded-[15px]'>
-                  <div className='w-[50px] h-[50px] rounded-full bg-[#C7C7C7] flex justify-center items-center'>
-                     <Icon icon="fluent:person-12-filled" className='text-[#44474F] text-2xl' />
-                  </div>
-                  <div>
-                     <h1 className='text-[#C3C3C3] text-lg'>User_{member.userId}</h1>
-                     <p className='text-[#9EA4AA] text-sm'>Level {member.level}</p>
-                  </div>
-               </div>
+                        <div className='w-[50px] h-[50px] rounded-full bg-[#C7C7C7] flex justify-center items-center'>
+                           <Icon icon="fluent:person-12-filled" className='text-[#44474F] text-2xl' />
+                        </div>
+                        <div>
+                           <h1 className='text-[#C3C3C3] text-lg'>User_{member.userId}</h1>
+                           <p className='text-[#9EA4AA] text-sm'>Level {member.level}</p>
+                        </div>
+                     </div>
                   ))
                }
             </div>

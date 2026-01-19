@@ -41,3 +41,24 @@ export const DashboardMenus = [
       link: '/'
    },
 ]
+
+
+export const profile_links = [
+   { name: 'Transactions', href: '/profile/transactions', icon: 'ic:round-history' },
+   { name: 'Settings', href: '/profile/settings', icon: 'ic:round-settings' },
+   { name: 'Help Center', href: '/profile/help-center', icon: 'fluent:person-call-20-filled' },
+   { name: 'Bank Details', href: '/profile/bank-details', icon: 'mdi:bank-outline' },
+   { name: 'Deposit', href: '/profile/deposit', icon: 'mage:plus-circle-fill' },
+   { name: 'Withdraw', href: '/profile/withdraw', icon: 'zondicons:minus-solid' },
+]
+
+export const security_center = [
+   { name: 'Login Password', href: '/profile/security/login-password', icon: 'solar:password-bold' },
+   { name: 'Withdrawal Password', href: '/profile/security/withdrawal-password', icon: 'solar:key-bold' },
+   { name: 'Bank Details', href: '/profile/bank-details', icon: 'mdi:bank-outline' },
+]
+
+export const help_center = [
+   { name: 'Message Center', href: '/profile/security/login-password', icon: 'mdi:message' },
+   { name: 'Call Customer Care', href: '/profile/security/withdrawal-password', icon: 'ri:customer-service-fill' },
+]
