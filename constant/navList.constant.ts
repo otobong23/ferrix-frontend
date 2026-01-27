@@ -9,3 +9,11 @@ export const navbarList = [
    { name: "team", link: "/team", icon: "icon-park-solid:transaction-order" },
    { name: "settings", link: "/profile", icon: "fluent:person-12-filled" },
 ]
+
+
+export const adminNavList = [
+   { name: "dashboard", link: "/admin/dashboard", icon: "majesticons:home" },
+   { name: "control", link: "/admin/control", icon: "majesticons:data" },
+   { name: "transaction", link: "/admin/transaction", icon: "icon-park-solid:transaction-order" },
+   { name: "history", link: "/admin/history", icon: "mingcute:history-fill" },
+]

@@ -33,7 +33,7 @@ const Settings = () => {
     // })
     console.log('Form submitted:', formState)
     // Add your form submission logic here
-  },[])
+  },[formState])
 
   const form_inputs = [
     { name: 'username', label: 'User Name', type: 'text', placeholder: 'Lois Becket', required: true },
@@ -67,7 +67,7 @@ const Settings = () => {
         <div className='px-4 flex flex-col gap-4'>
           {
             form_inputs.map(details => (
-              <div className='flex flex-col' key={details.name}>
+              <div className='flex flex-col gap-2' key={details.name}>
                 <label htmlFor={details.name} className='text-xl text-[#F5F5F7]'>{details.label}</label>
                 <input type={details.type} value={formState[details.name]} required={details.required} onChange={(e: ChangeEvent<HTMLInputElement>) => handleFormState(details.name, e.target.value)} name={details.name} id={details.name} className='outline-0 border border-[#9EA4AA] px-3.5 py-3 rounded-xl placeholder:text-[#62686E] text-xl text-[#F5F5F7]' placeholder={details.placeholder} />
               </div>

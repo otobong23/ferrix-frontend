@@ -14,6 +14,7 @@
   --font-poppins: var(--font-poppins), sans-serif;
 
   --color-investor-gold: #E6A500;
+  --color-active-green: #009912;
 }
 
 @layer components {

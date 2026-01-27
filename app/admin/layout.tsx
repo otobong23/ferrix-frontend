@@ -1,5 +1,4 @@
-import LayoutWrapper from "@/components/user/LayoutWrapper";
-
+import AdminWrapper from "@/components/admin/AdminWrapper";
 
 export default function Layout({
   children,
@@ -8,9 +7,9 @@ export default function Layout({
 }>) {
   return (
     <div>
-      <LayoutWrapper>
+      <AdminWrapper>
         {children}
-      </LayoutWrapper>
+      </AdminWrapper>
     </div>
   );
 }

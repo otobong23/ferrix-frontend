@@ -52,6 +52,12 @@ export const profile_links = [
    { name: 'Withdraw', href: '/profile/withdraw', icon: 'zondicons:minus-solid' },
 ]
 
+export const user_links = [
+   { name: 'Transactions', href: 'transactions', icon: 'ic:round-history' },
+   { name: 'User Data', href: 'user-data', icon: 'ic:round-settings' },
+   { name: 'Edit Balance', href: 'edit-balance', icon: 'mage:dollar-fill' },
+]
+
 export const security_center = [
    { name: 'Login Password', href: '/profile/security/login-password', icon: 'solar:password-bold' },
    { name: 'Withdrawal Password', href: '/profile/security/withdrawal-password', icon: 'solar:key-bold' },

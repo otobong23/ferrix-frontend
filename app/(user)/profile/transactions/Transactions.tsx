@@ -1,10 +1,7 @@
 'use client'
-import { Icon } from '@iconify-icon/react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import c2 from '@/assets/imgs/c2.png'
 import { useMemo, useState } from 'react'
 import { formatInTimeZone } from 'date-fns-tz'
+import UI_header from '@/components/UI_header'
 
 const FILTER = [
    {
@@ -48,7 +45,6 @@ const demoTranasctions: UserTransaction[] = [
 ]
 
 const Transactions = () => {
-   const router = useRouter()
    const [stack, setStack] = useState(1);
    const [transaction, setTransaction] = useState<UserTransaction[]>(demoTranasctions)
 
@@ -62,22 +58,7 @@ const Transactions = () => {
 
    return (
       <div>
-         <div className='flex bg-[#44474F] rounded-lg m-4'>
-            <div className='flex-1 px-4 py-3'>
-               <button onClick={() => router.back()} className='flex items-center'>
-                  <Icon icon="fluent:ios-arrow-24-regular" />
-                  <span>Back</span>
-               </button>
-
-               <h1 className='font-inria-sans font-bold text-5xl mt-1 mb-2'>TTH</h1>
-
-               <p className='text-[#9EA4AA]'>Total Transaction History</p>
-            </div>
-
-            <div className='flex-1'>
-               <Image src={c2} alt='c2 image' className='w-full' />
-            </div>
-         </div>
+         <UI_header title='TTH' description='Total Transaction History' />
 
          <div className='flex gap-[7px] px-4 pb-[15px] overflow-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
             {FILTER.map(({ title, type, stackValue }) => (

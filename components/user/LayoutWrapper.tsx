@@ -1,5 +1,5 @@
 "use client";
-import Navbar from "@/components/Navbar";
+import Navbar from "./Navbar";
 import { useEffect, useRef, useState } from "react";
 import Sidebar from "./Sidebar";
 
