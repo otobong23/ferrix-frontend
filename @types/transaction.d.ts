@@ -34,3 +34,6 @@ type Bank = {
   ussd: string;
   logo: string;
 };
+
+
+type ErrorType = { [key: string]: string };

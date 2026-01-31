@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inria_Sans, Poppins } from "next/font/google";
 import "./globals.css";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import QueryLayout from "@/components/QueryLayout";
 
 // Inria Sans
 const InriaSans = Inria_Sans({
@@ -33,7 +35,11 @@ export default function RootLayout({
       <body
         className={`${InriaSans.variable} ${poppins.variable} antialiased`}
       >
-        {children}
+        <QueryLayout>
+          <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_OAuth_Client_ID!}>
+            {children}
+          </GoogleOAuthProvider>
+        </QueryLayout>
       </body>
     </html>
   );

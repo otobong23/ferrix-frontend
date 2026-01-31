@@ -53,7 +53,7 @@ const Deposit = () => {
                         form_inputs.map(details => (
                            <div className='flex flex-col gap-2' key={details.name}>
                               <label htmlFor={details.name} className='text-xl text-[#F5F5F7]'>{details.label}</label>
-                              <div className="relative before:content-['$'] before:absolute before:left-3 before:top-3 before:text-xl before:text-[#F5F5F7] before:focus:text-[#62686E]">
+                              <div className="relative before:content-['$'] before:absolute before:left-3 before:top-3 before:text-xl text-[#F5F5F7] before:focus:text-[#62686E]">
                                  <input type={details.type} value={formState[details.name]} required={details.required} onChange={(e: ChangeEvent<HTMLInputElement>) => handleFormState(details.name, e.target.value)} name={details.name} id={details.name} className='outline-0 border border-[#9EA4AA] pr-3.5 pl-8 py-3 rounded-xl placeholder:text-[#62686E] text-xl text-[#F5F5F7] w-full' placeholder={details.placeholder} />
                               </div>
                            </div>
