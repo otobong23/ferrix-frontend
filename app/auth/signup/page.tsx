@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import Signup from './Signup'
 
 const page = () => {
-  return <Signup />
+  return (
+    <Suspense fallback={<div>Loading signup form...</div>}>
+      <Signup />
+    </Suspense>
+  )
 }
 
 export default page

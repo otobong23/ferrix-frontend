@@ -5,6 +5,11 @@ import React, { ChangeEvent, FormEvent, useCallback, useState } from 'react'
 import { Icon } from '@iconify-icon/react';
 import Link from 'next/link';
 import GoogleLogin from '@/components/google/GoogleLogin';
+import { showToast } from '@/utils/alert';
+import { useMutation } from '@tanstack/react-query';
+import { loginUserAPI } from '@/services/Authentication';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/Auth.context';
 
 interface formStateType {
   email: string;
@@ -13,6 +18,8 @@ interface formStateType {
 }
 
 const Login = () => {
+  const router = useRouter();
+  const { setUser } = useAuth();
 
   const [formState, setFormState] = useState<formStateType>({
     email: '',
@@ -23,14 +30,55 @@ const Login = () => {
     setFormState(prev => ({ ...prev, [name]: value }))
   }, [])
 
+  // Signup mutation using React Query
+  const loginMutation = useMutation({
+    mutationFn: (data: loginFormStateType) => loginUserAPI(data),
+    onSuccess: (data) => {
+      // Handle successful signup
+      console.log('Login successful:', data);
+      setUser(data);
+
+      // Show success message
+      showToast('success', 'Account Logged in successfully!');
+
+      // Redirect to dashboard
+      router.push('/dashboard');
+    },
+    onError: (error: any) => {
+      // Handle error
+      console.error('Login error:', error);
+      const errorMessage = error?.response?.data?.message || error?.message || 'Login failed. Please try again.';
+      showToast('error', errorMessage);
+    },
+  });
+
   const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Object.entries(formState).forEach(([key, value]) => {
-    //   if(!value) alert(key)
-    // })
+    // Basic validation
+    if (!formState.email || !formState.password) {
+      showToast('warning', 'Please fill in all required fields');
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formState.email)) {
+      showToast('warning', 'Please enter a valid email address');
+      return;
+    }
+
+    // Password validation (minimum 6 characters)
+    if (formState.password.length < 6) {
+      showToast('warning', 'Password must be at least 6 characters long');
+      return;
+    }
+
     console.log('Form submitted:', formState)
     // Add your form submission logic here
-  }, [formState])
+
+    // Submit form
+    loginMutation.mutate(formState);
+  }, [formState, loginMutation])
 
   const [form_inputs, setForm_inputs] = useState([
     { name: 'email', label: 'Email', type: 'email', placeholder: 'Loisbecket@gmail.com', required: true },

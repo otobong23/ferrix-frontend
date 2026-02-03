@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export const baseURL = 'http://localhost:4000'
+export const baseURL = process.env.NEXT_PUBLIC_BASE_URL
 
 // Simple in-memory cache for GET requests
 const cache = new Map();
@@ -63,6 +63,8 @@ authFetch.interceptors.response.use(
 
       return response;
    },
+
+
    async (error) => {
       if (error.isCached) {
          return Promise.resolve(error.response);

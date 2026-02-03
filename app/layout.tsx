@@ -3,6 +3,7 @@ import { Inria_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import QueryLayout from "@/components/QueryLayout";
+import { AuthProvider } from "@/context/Auth.context";
 
 // Inria Sans
 const InriaSans = Inria_Sans({
@@ -35,11 +36,13 @@ export default function RootLayout({
       <body
         className={`${InriaSans.variable} ${poppins.variable} antialiased`}
       >
-        <QueryLayout>
-          <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_OAuth_Client_ID!}>
-            {children}
-          </GoogleOAuthProvider>
-        </QueryLayout>
+        <AuthProvider>
+          <QueryLayout>
+            <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_OAuth_Client_ID!}>
+              {children}
+            </GoogleOAuthProvider>
+          </QueryLayout>
+        </AuthProvider>
       </body>
     </html>
   );

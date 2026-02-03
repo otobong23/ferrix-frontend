@@ -1,7 +1,8 @@
+'use client';
 import LayoutWrapper from "@/components/user/LayoutWrapper";
+import AuthGuard from "@/components/AuthGuard";
 
-
-export default function Layout({
+function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -14,3 +15,5 @@ export default function Layout({
     </div>
   );
 }
+
+export default AuthGuard(Layout)
