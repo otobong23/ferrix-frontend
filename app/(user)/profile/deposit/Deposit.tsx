@@ -3,8 +3,12 @@
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import UI_header from "@/components/UI_header";
 import { depositRemark } from "@/constant/Remark.constant";
+import { showToast } from "@/utils/alert";
 import { Icon } from "@iconify-icon/react";
-import { ChangeEvent, FormEvent, Fragment, useCallback, useState } from "react";
+import { AxiosError } from "axios";
+import imageCompression from "browser-image-compression";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, FormEvent, Fragment, MouseEvent, useCallback, useState } from "react";
 
 interface formStateType {
    amount: string;
@@ -14,23 +18,89 @@ interface formStateType {
 const address = "12345sgfdwfrefewfdfidifire"
 
 const Deposit = () => {
+   const router = useRouter();
    const [formState, setFormState] = useState<formStateType>({
       amount: '',
    })
-   const [stack, setStack] = useState(3)
+   const [file, setFile] = useState<File | null>(null)
+   const [stack, setStack] = useState(1)
 
    const handleFormState = useCallback((name: string, value: string) => {
       setFormState(prev => ({ ...prev, [name]: value }))
    }, [])
 
-   const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      // Object.entries(formState).forEach(([key, value]) => {
-      //   if(!value) alert(key)
-      // })
-      console.log('Form submitted:', formState)
+   const MAX_FILE_SIZE_MB = 5;
+
+   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const selected = e.target.files?.[0];
+      if (!selected) return;
+      if (selected && selected.size / (1024 * 1024) > MAX_FILE_SIZE_MB) {
+         showToast('warning', 'File too large. Max size is 5MB.');
+         return;
+      }
+      try {
+         const options = {
+            maxSizeMB: MAX_FILE_SIZE_MB,
+            maxWidthOrHeight: 800,
+            useWebWorker: true,
+         };
+
+         const compressedFile = await imageCompression(selected, options);
+         setFile(compressedFile);
+      } catch (error) {
+         console.error('Image compression error:', error);
+         showToast('error', 'Failed to compress image.');
+      }
+   };
+
+   const toBase64 = (file: File): Promise<string> =>
+      new Promise((resolve, reject) => {
+         const reader = new FileReader();
+         reader.readAsDataURL(file); // includes mime type like "data:image/png;base64,..."
+         reader.onload = () => resolve(reader.result as string);
+         reader.onerror = reject;
+      });
+
+   const handleUpload = async () => {
+      if (!file) return;
+
+      const imageBase64 = await toBase64(file);
+
+      try {
+         //API call
+
+         showToast('success', 'Deposit request submitted successfully')
+         router.replace('/profile/transactions')
+      } catch (err) {
+         console.log(err)
+         if (err instanceof AxiosError) {
+            showToast('error', err.response?.data.message)
+         } else {
+            showToast('error', 'An error occurred during signup')
+         }
+      }finally {
+         setFile(null);
+      }
+   }
+
+   const handleSubmit = useCallback((e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      switch (stack) {
+         case 1:
+            setStack(2)
+            break;
+         case 2:
+            setStack(3)
+            break;
+         default:
+            //upload documents upload
+
+            console.dir(file)
+            handleUpload();
+            break;
+      }
       // Add your form submission logic here
-   }, [formState])
+   }, [stack])
 
    const form_inputs = [
       { name: 'amount', label: 'Deposit Amount', type: 'number', placeholder: 'Enter Deposit Amount', required: true },
@@ -76,7 +146,7 @@ const Deposit = () => {
             {stack === 2 &&
                <Fragment key={'stack' + stack}>
                   <div className="px-2.5 py-3.5 rounded-lg bg-[#F5F5F7]/7 mx-4">
-                     <p className="text-center">Deposit Amount: <span className="text-[#4DB6AC]">50$</span></p>
+                     <p className="text-center">Deposit Amount: <span className="text-[#4DB6AC]">{Number(formState.amount).toLocaleString('en-US', { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span></p>
                      <p className="text-center">Network : <span className="text-[#4DB6AC]">USDT</span></p>
                   </div>
 
@@ -98,12 +168,12 @@ const Deposit = () => {
                   </div>
 
                   <div className="bg-[#44474F] py-[50px] flex justify-center mx-4 my-8 rounded-lg">
-                     <label htmlFor="reciept" className="bg-[#D9D9D9] w-[100px] h-[100px] rounded-full flex justify-center items-center">
+                     <label htmlFor="reciept" className={`w-[100px] h-[100px] rounded-full flex justify-center items-center ${file ? 'bg-investor-gold' : 'bg-[#D9D9D9] '}`}>
                         <Icon icon="humbleicons:download" className="text-[#1D1D1F]" width={46} />
                      </label>
                      <div className='hidden'>
-                     <input type="file" name="reciept" id="reciept" accept="image/*,application/pdf" />
-                  </div>
+                        <input type="file" onChange={handleFileChange} name="reciept" id="reciept" accept="image/*,application/pdf" />
+                     </div>
                   </div>
                </Fragment>
             }
@@ -121,7 +191,7 @@ const Deposit = () => {
                </ol>
             </div>
 
-            <button className='flex items-center justify-center mx-4 my-6 py-2 text-lg text-white rounded-[10px] bg-investor-gold theme-button-effect'>Confirm</button>
+            <button className='flex items-center justify-center mx-4 my-6 py-3 text-lg text-white rounded-[10px] bg-investor-gold theme-button-effect' onClick={e => handleSubmit(e)}>Confirm</button>
          </div>
       </div>
    )

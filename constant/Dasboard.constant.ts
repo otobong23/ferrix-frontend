@@ -59,7 +59,7 @@ export const user_links = [
 ]
 
 export const security_center = [
-   { name: 'Login Password', href: '/profile/security/login-password', icon: 'solar:password-bold' },
+   { name: 'Login Password', href: '/auth/password-reset', icon: 'solar:password-bold' },
    { name: 'Withdrawal Password', href: '/profile/security/withdrawal-password', icon: 'solar:key-bold' },
    { name: 'Bank Details', href: '/profile/bank-details', icon: 'mdi:bank-outline' },
 ]

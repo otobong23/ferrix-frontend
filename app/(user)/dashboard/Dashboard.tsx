@@ -7,9 +7,11 @@ import { DashboardMenus } from "@/constant/Dasboard.constant";
 import Link from "next/link";
 import { products } from "@/constant/product.constant";
 import ProductCard from "@/components/ProductCard";
+import { useAuth } from "@/context/Auth.context";
 
 
 export default () => {
+   const { user } = useAuth()
    const [userID] = useState<String>("UserID24");
    const [balance] = useState<Number>(200000)
    const [miningAsset] = useState<Number>(360000)

@@ -21,10 +21,9 @@ export async function loginResponse(response: AxiosResponse<any, any, {}>) {
     userID: response.data.userID,
     email: response.data.email,
     sub: response.data.sub,    //user._id
-    expires_in: response.data.user.expires_in
+    expires_at: response.data.user.expires_at
   };
-  const expiresIn = response.data.user.expires_in; // seconds
-  const expiresAt = Date.now() + expiresIn * 1000; // ms timestamp
+  const expiresAt = response.data.user.expires_at; // seconds
 
   localStorage.setItem("user", JSON.stringify(userData));
   localStorage.setItem("token", accessToken); // SINGLE SOURCE
@@ -46,9 +45,8 @@ export async function loginUserAPI(details: loginFormStateType) {
   return loginResponse(response)
 }
 
-export const tokenExpiresAt = Number(localStorage.getItem('tokenExpiresAt'));
-if (Date.now() > tokenExpiresAt) {
-  logoutUser(); // or call refresh endpoint
+export async function sendCodeAPI(params:string) {
+  
 }
 
 export async function logoutUser() {

@@ -1,21 +1,26 @@
-// utils/withAuth.tsx
+// utils/AuthGuard.tsx
 'use client';
 import { useEffect } from "react";
 import { useAuth } from "@/context/Auth.context";
 import { useRouter } from "next/navigation";
 
-export default function AuthGuard<P extends object>(WrappedComponent: React.ComponentType<P>): React.FC<P> {
+export default function AuthGuard<P extends object>(
+  WrappedComponent: React.ComponentType<P>
+): React.FC<P> {
   return (props: P) => {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-      if (!user) {
-        router.replace("/auth/login"); // redirect to login
+      if (!loading && !user) {
+        router.replace("/auth/login");
       }
-    }, [user, router]);
+    }, [loading, user, router]);
 
-    if (!user) return null; // or a loading spinner while redirecting
+    // 🔥 Block rendering until auth is resolved
+    if (loading) return null; // or <Spinner />
+
+    if (!user) return null;
 
     return <WrappedComponent {...props} />;
   };

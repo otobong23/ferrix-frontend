@@ -1,6 +1,7 @@
 'use client';
 import LayoutWrapper from "@/components/user/LayoutWrapper";
 import AuthGuard from "@/components/AuthGuard";
+import { UserProvider } from "@/context/User.context";
 
 function Layout({
   children,
@@ -10,7 +11,9 @@ function Layout({
   return (
     <div>
       <LayoutWrapper>
-        {children}
+        <UserProvider>
+          {children}
+        </UserProvider>
       </LayoutWrapper>
     </div>
   );
