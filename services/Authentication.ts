@@ -45,8 +45,26 @@ export async function loginUserAPI(details: loginFormStateType) {
   return loginResponse(response)
 }
 
-export async function sendCodeAPI(params:string) {
-  
+export async function requestCodeAPI(details: { email: string }) {
+  const res = await authFetch.patch("/auth/sendVerificationCode", details)
+  return res.data
+}
+
+export async function sendCodeAPI(details: { email: string, code: string }): Promise<string> {
+  const res = await authFetch.patch("/auth/verify-code", details)
+  const token = res.data.password_token;
+  return token
+}
+
+export async function newPasswordAPI(details: { newPassword: string }, resetToken: string) {
+  const res = await authFetch.patch("/auth/change-password", details,
+    {
+      headers: {
+        Authorization: `Bearer ${resetToken}`,
+      },
+    }
+  )
+  return res.data
 }
 
 export async function logoutUser() {

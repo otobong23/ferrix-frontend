@@ -4,6 +4,7 @@ import "./globals.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import QueryLayout from "@/components/QueryLayout";
 import { AuthProvider } from "@/context/Auth.context";
+import { Toaster } from 'react-hot-toast';
 
 // Inria Sans
 const InriaSans = Inria_Sans({
@@ -39,6 +40,7 @@ export default function RootLayout({
         <AuthProvider>
           <QueryLayout>
             <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_OAuth_Client_ID!}>
+              <Toaster position="bottom-right" />
               {children}
             </GoogleOAuthProvider>
           </QueryLayout>

@@ -1,10 +1,13 @@
 "use client";
+import { useResetPassword } from '@/context/ResetPassword.context';
+import { requestCodeAPI, sendCodeAPI } from '@/services/Authentication';
 import { showToast } from '@/utils/alert';
 import { Icon } from '@iconify-icon/react'
 import { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, FormEvent, MouseEvent, useCallback, useEffect, useState } from 'react'
+import toast from 'react-hot-toast';
 
 const a = 'w-[48px] md:w-[69px] h-[60px] md:h-[85px] bg-none text-[var(--color2)] text-center text-lg lg:text-xl rounded-[15px] lg:rounded-[17px]'
 
@@ -18,10 +21,12 @@ interface formStateType {
 const PasswordReset = () => {
   const router = useRouter()
   const [stack, setStack] = useState<number>(1)
+  const [loading, setLoading] = useState(false)
   const [VCode, setVCode] = useState<number[]>(new Array(6).fill(""));
   const [error, setError] = useState<{ active: boolean, message: string }>({ active: false, message: '' })
   const [active, setActive] = useState(false)
   const [seconds, setSeconds] = useState(0);
+  const { passwordResetSetToken } = useResetPassword()
 
   const [formState, setFormState] = useState<formStateType>({
     email: ''
@@ -77,52 +82,58 @@ const PasswordReset = () => {
     return () => clearTimeout(timer);
   }, [seconds]);
 
-  const handleResend = async () => {
-    setSeconds(counter);
-    setVCode(new Array(6).fill(""));
-    const email = sessionStorage.getItem('email')
-    if (!email) {
-      showToast('error', 'Failed to resend email')
-      //  router.replace('/auth/password-recovery/')
-    }
-
+  const handleEmailRequest = async () => {
+    const toastId = toast.loading('Processing...');
+    setLoading(true)
     try {
-      //  await api.patch('auth/sendVerificationCode', { email })
-      showToast('success', 'Verification Code has been sent')
+      const res = await requestCodeAPI(formState)
+      toast.success(res.message, { id: toastId })
+      setStack(prev => prev + 1)
     } catch (err) {
-      console.error('Verification error:', err);
+      console.error('Request Code error:', err);
       const message =
         err instanceof AxiosError
           ? err.response?.data?.message || 'Unexpected API error'
           : 'An unexpected error occurred';
-      showToast('error', message);
+      toast.error(message, { id: toastId });
+    } finally {
+      setLoading(false)
     }
+  }
+
+  const handleResend = async () => {
+    setSeconds(counter);
+    setVCode(new Array(6).fill(""));
+    handleEmailRequest()
+  }
+
+  const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleEmailRequest()
   }
 
   const form_inputs = [
     { name: 'email', label: 'Email', type: 'email', placeholder: 'Loisbecket@gmail.com', required: true },
   ]
 
-  const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStack(prev => prev + 1)
-  }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const code = VCode.join('')
+    setLoading(true)
     try {
-      //  const data = await api.patch('auth/verify-code', { email, code });
-      console.log(formState.email, code)
+      const response = await sendCodeAPI({ email: formState.email, code })
+      passwordResetSetToken(response)
       showToast('success', 'Code verified successfully!')
       router.replace('/auth/password-reset/new-password')
     } catch (err) {
-      console.error('Verification error:', err);
+      console.error('Verfying Code error:', err);
       const message =
         err instanceof AxiosError
           ? err.response?.data?.message || 'Unexpected API error'
           : 'An unexpected error occurred';
       showToast('error', message);
+    } finally {
+      setLoading(false)
     }
   }
   return (
@@ -148,7 +159,7 @@ const PasswordReset = () => {
               ))
             }
 
-            <button type='submit' className={`flex items-center justify-center my-6 py-4 text-lg text-white rounded-[10px] bg-investor-gold theme-button-effect w-full ${formState.email ? 'opacity-100' : 'opacity-50'}`} disabled={!formState.email}>Continue</button>
+            <button type='submit' className={`flex items-center justify-center my-6 py-4 text-lg text-white rounded-[10px] bg-investor-gold theme-button-effect w-full ${formState.email && !loading ? 'opacity-100' : 'opacity-50'}`} disabled={!formState.email && loading}>Continue</button>
           </form>
         </div>
       )}
@@ -192,7 +203,7 @@ const PasswordReset = () => {
               </p> : <Link href="#" onClick={handleResend} className='underline'>Resend code</Link>}
             </div>
 
-            <button type='submit' className={`flex items-center justify-center my-6 py-4 text-lg text-white rounded-[10px] bg-investor-gold theme-button-effect w-full ${active ? 'opacity-100' : 'opacity-50'}`} disabled={!active}>Continue</button>
+            <button type='submit' className={`flex items-center justify-center my-6 py-4 text-lg text-white rounded-[10px] bg-investor-gold theme-button-effect w-full ${active && !loading ? 'opacity-100' : 'opacity-50'}`} disabled={!active && loading}>Continue</button>
           </form>
         </div>
       )}
