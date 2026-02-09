@@ -1,7 +1,7 @@
 // context/UserContext.tsx
 'use client';
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import authFetch from "@/utils/api";
+import { getProfileAPI } from "@/services/Profile";
 
 export interface UserProfile extends UserType {}
 
@@ -21,18 +21,23 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   // Load from localStorage first
   useEffect(() => {
     const cached = localStorage.getItem("userData");
-    if (cached) {
+    if (cached && cached !== "undefined") {
+    try {
       setUserData(JSON.parse(cached));
+    } catch (err) {
+      console.error("Invalid cached userData, clearing storage");
+      localStorage.removeItem("userData");
     }
+  }
     setLoading(false);
   }, []);
 
   // Fetch latest from backend
   const refreshUser = async () => {
     try {
-      const res = await authFetch.get("/user/me");    // user profile Endpoint
-      setUserData(res.data);
-      localStorage.setItem("userData", JSON.stringify(res.data));
+      const res = await getProfileAPI()    // user profile Endpoint
+      setUserData(res);
+      localStorage.setItem("userData", JSON.stringify(res));
     } catch (err) {
       console.error("Failed to refresh user profile");
     }

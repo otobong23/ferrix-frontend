@@ -70,7 +70,7 @@ const PasswordReset = () => {
     } else {
       setActive(false)
     }
-  })
+  }, [VCode])
 
   useEffect(() => {
     let timer: NodeJS.Timeout;

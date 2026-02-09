@@ -16,7 +16,7 @@ const Signup = () => {
   const router = useRouter();
   const { setUser } = useAuth();
   const searchParams = useSearchParams();
-   const refCode = searchParams.get('inviteCode');
+   const refCode = searchParams.get('reg');
   const [formState, setFormState] = useState<SignupFormStateType>({
     fullName: '',
     email: '',
@@ -105,7 +105,7 @@ const Signup = () => {
     { name: 'fullName', label: 'Full Name', type: 'text', placeholder: 'Lois Becket', required: true },
     { name: 'email', label: 'Email', type: 'email', placeholder: 'Loisbecket@gmail.com', required: true },
     { name: 'DOB', label: 'Date Of Birth', type: 'date', placeholder: 'DOB', required: true },
-    { name: 'phone', label: 'Phone Number', type: 'text', placeholder: '(234) 904 382 2819', required: true },
+    { name: 'phone', label: 'WhatsApp Number', type: 'text', placeholder: '(234) 904 382 2819', required: true },
     { name: 'password', label: 'Set Password', type: 'password', placeholder: '*******', required: true },
     { name: 'referral_code', label: 'Referral (Optional)', type: 'text', placeholder: '9847266', required: false },
   ])

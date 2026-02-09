@@ -7,10 +7,10 @@ export const depositRemark = [
 ]
 
 export const withdrawRemark = [
-   'Minimum withdrawal: 5$',
+   'Minimum withdrawal: 12$',
    'Percentage Withdrawal Charge: 12%',
    'Withdrawal time: Withdrawals are 9 to 5, Monday to Friday.',
    'Arrival time: Determined based on the arrival time of international bank transfers, usually 24-48 hours.',
-   'Withdrawal account: Ensure that your Bank card is set up completely, if not your withdrawal will be denied.',
+   'Withdrawal wallet: Ensure that your wallet address is set up completely, if not your withdrawal will be denied.',
    'Note: Withdrawal must be withing the 9 to 5, Monday to Friday time frame.'
 ]

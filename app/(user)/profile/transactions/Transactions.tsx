@@ -1,7 +1,11 @@
 'use client'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { formatInTimeZone } from 'date-fns-tz'
 import UI_header from '@/components/UI_header'
+import { getTransactionsAPI } from '@/services/Transaction'
+import { AxiosError } from 'axios'
+import { showToast } from '@/utils/alert'
+import { Icon } from '@iconify-icon/react'
 
 const FILTER = [
    {
@@ -31,22 +35,13 @@ const getFilterType = (stack: number) => {
    return found?.type ?? 'all';
 };
 
-const demoTranasctions: UserTransaction[] = [
-   {
-      _id: '123',
-      transactionID: '123',
-      email: 'bonifacemiracle@gmail.com',
-      type: 'bonus',
-      amount: 100,
-      status: 'completed',
-      createdAt: '1768847078951',
-      updatedAt: '1768847078951',
-   }
-]
 
 const Transactions = () => {
    const [stack, setStack] = useState(1);
-   const [transaction, setTransaction] = useState<UserTransaction[]>(demoTranasctions)
+   const [transaction, setTransaction] = useState<UserTransaction[]>([])
+   const [totalTransaction, setTotalTransaction] = useState(0)
+   const [currentTransactionPage, setCurrentTransactionPage] = useState(1)
+   const [totalPages, setTotalPages] = useState(1)
 
    const filteredTransactions = useMemo(() => {
       if (!transaction?.length) return [];
@@ -55,6 +50,57 @@ const Transactions = () => {
       if (type === 'bonus') return transaction.filter(item => item.type === 'bonus' || item.type === 'yield');
       return transaction.filter(item => item.type === type);
    }, [transaction, stack]);
+
+   const fetchTransactions = async (page: number = 1) => {
+      try {
+         const res = await getTransactionsAPI({ limit: 100, page: page });
+         setTransaction(res.transactions);
+         setTotalTransaction(res.total)
+         setCurrentTransactionPage(res.page)
+         setTotalPages(res.totalPages)
+      } catch (err) {
+         console.error('Request Code error:', err);
+         const message =
+            err instanceof AxiosError
+               ? err.response?.data?.message || 'Unexpected API error'
+               : 'An unexpected error occurred';
+         showToast('error', message);
+      }
+   }
+
+   useEffect(() => {
+      fetchTransactions();
+   }, []);
+
+   const next = () => {
+      const offset = totalPages - currentTransactionPage
+      if (offset <= 0) return
+      try {
+         const page = currentTransactionPage + 1
+         fetchTransactions(page)
+      } catch (err) {
+         if (err instanceof AxiosError) {
+            showToast('error', err.response?.data.message)
+         } else {
+            showToast('error', 'An error occurred during signup')
+         }
+      }
+   }
+
+   const previous = () => {
+      const offset = totalPages - currentTransactionPage
+      if (offset > 0) return
+      try {
+         const page = currentTransactionPage ? currentTransactionPage - 1 : 1
+         fetchTransactions(page)
+      } catch (err) {
+         if (err instanceof AxiosError) {
+            showToast('error', err.response?.data.message)
+         } else {
+            showToast('error', 'An error occurred during signup')
+         }
+      }
+   }
 
    return (
       <div>
@@ -66,21 +112,26 @@ const Transactions = () => {
             ))}
          </div>
 
-         <div className='px-4'>
+         <div className="flex justify-between" hidden={totalPages == 1}>
+            <button onClick={previous} className={`flex items-center ${currentTransactionPage == 1 ? 'invisible' : 'visible'}`}><Icon icon='fluent:chevron-left-24-filled' className="text-2xl" /><span className='leading-tight'>prev</span></button>
+            <button onClick={next} className={`flex items-center ${currentTransactionPage == totalPages ? ' invisible' : 'visible'}`}><span className='leading-tight'>next</span><Icon icon='fluent:chevron-right-24-filled' className="text-2xl" /></button>
+         </div>
+
+         <div className='px-4 flex flex-col gap-3'>
             {filteredTransactions.length ? filteredTransactions.map((item, index) => (
-               <div key={item.type + index} className='flex flex-col py-2.5 px-5 bg-[#F5F5F7]/7 text-[#C3C3C3] gap-3 rounded-lg'>
-                  <div className='flex justify-between'>
-                     <h1 className='text-sm font-semibold mb-1 capitalize'>
-                        {item.type} {item.status === 'pending' ? 'pending' : item.status === 'completed' ? 'successful' : 'failed'}
-                     </h1>
-                     <p className='text-[#9EA4AA]'>${item.amount.toLocaleString()}</p>
+                  <div key={item.type + index} className='flex flex-col py-2.5 px-5 bg-[#F5F5F7]/7 text-[#C3C3C3] gap-3 rounded-lg'>
+                     <div className='flex justify-between'>
+                        <h1 className='text-sm font-semibold mb-1 capitalize'>
+                           {item.type === 'tier' ? 'rebate' : item.type} {item.status === 'pending' ? 'pending' : item.status === 'completed' ? 'successful' : 'failed'}
+                        </h1>
+                        <p className='text-[#9EA4AA]'>${item.amount.toLocaleString()}</p>
+                     </div>
+                     <div className='flex justify-between text-xs font-normal text-[#9EA4AA]'>
+                        <p>{formatInTimeZone(item.date ?? Date.now(), 'Africa/Lagos', 'HH:mm')}</p>
+                        <p>{formatInTimeZone(item.date ?? Date.now(), 'Africa/Lagos', 'dd/MM/yy')}</p>
+                     </div>
                   </div>
-                  <div className='flex justify-between text-xs font-normal text-[#9EA4AA]'>
-                     <p>{formatInTimeZone(Number(item.updatedAt) ?? Date.now(), 'Africa/Lagos', 'HH:mm')}</p>
-                     <p>{formatInTimeZone(Number(item.updatedAt) ?? Date.now(), 'Africa/Lagos', 'dd/MM/yy')}</p>
-                  </div>
-               </div>
-            )) : <p className="text-center text-sm text-white/60">No Transaction Found yet.</p>}
+               )) : <p className="text-center text-sm text-white/60">No Transaction Found yet.</p>}
          </div>
       </div>
    )

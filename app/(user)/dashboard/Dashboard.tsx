@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "@iconify-icon/react"
 import gemImage from "@/assets/imgs/gem.png"
 import Image from "next/image";
@@ -8,14 +8,27 @@ import Link from "next/link";
 import { products } from "@/constant/product.constant";
 import ProductCard from "@/components/ProductCard";
 import { useAuth } from "@/context/Auth.context";
+import { useUser } from "@/context/User.context";
 
 
 export default () => {
    const { user } = useAuth()
-   const [userID] = useState<String>("UserID24");
-   const [balance] = useState<Number>(200000)
-   const [miningAsset] = useState<Number>(360000)
-   const [crew] = useState<Number>(0)
+   const { userData } = useUser()
+   const [userID, setUserID] = useState<String>("UserID1");
+   const [balance, setBalance] = useState<Number>(0)
+   const [miningAsset, setMiningAsset] = useState<Number>(0)
+   const [crew, setCrew] = useState<Number>(0)
+
+   useEffect(() => {
+      if (user) {
+         setUserID(user.userID)
+      }
+      if (userData) {
+         setBalance(userData.balance)
+         setMiningAsset(userData.totalDeposit)
+         setCrew(userData.referral_count ?? 0)
+      }
+   }, [user, userData])
    return (
       <section className="overflow-x-hidden">
          <div className="flex items-center justify-between px-4 lg:pl-11 pt-4 mb-5 lg:mb-20">
@@ -61,10 +74,10 @@ export default () => {
             <Icon icon="bi:shield-fill" className="text-[15px] lg:text-[21px] mr-2" />
             A strong team has many players
 
-            <button className="flex justify-center items-center ml-auto text-[#F5F5F7] text-nowrap bg-[linear-gradient(158.16deg,rgba(255,255,255,0.4)3.02%,rgba(145,145,145,0)134.13%)] p-[5px] md:p-[8px_15px] border-gradient rounded-sm theme-button-effect">
+            <Link href="/team" className="flex justify-center items-center ml-auto text-[#F5F5F7] text-nowrap bg-[linear-gradient(158.16deg,rgba(255,255,255,0.4)3.02%,rgba(145,145,145,0)134.13%)] p-[5px] md:p-[8px_15px] border-gradient rounded-sm theme-button-effect">
                Invite Now
                <Icon icon="iconoir:nav-arrow-right" />
-            </button>
+            </Link>
          </p>
 
          <div className="grid grid-cols-4 md:grid-cols-8 px-4 justify-items-center gap-y-11 mb-8 md:mb-10">
@@ -79,16 +92,16 @@ export default () => {
          </div>
 
          <div className="bg-[#44474F] rounded-lg p-2 md:px-7 md:py-3 mx-4 flex justify-between mb-[25px] md:mb-8">
-            <button className="px-[15px] py-2 text-lg text-[#F5F5F7] rounded-sm bg-investor-gold theme-button-effect">Popular</button>
-            <button className="px-[15px] py-2 text-lg text-[#F5F5F7] bg-[#F5F5F7]/7 rounded-sm flex items-center theme-button-effect">
+            <Link href="/investments/plans" className="px-[15px] py-2 text-lg text-[#F5F5F7] rounded-sm bg-investor-gold theme-button-effect">Popular</Link>
+            <Link href="/investments/plans" className="px-[15px] py-2 text-lg text-[#F5F5F7] bg-[#F5F5F7]/7 rounded-sm flex items-center theme-button-effect">
                <span>See all</span>
                <Icon icon="iconoir:nav-arrow-right" />
-            </button>
+            </Link>
          </div>
 
          <div className="card_section mx-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
             {
-               products.map((product, index) => <ProductCard product={product} key={product + '_' + index} />)
+               products.map((product, index) => <ProductCard handleClick={() => console.log('dashbord product link clicked')} product={product} key={product + '_' + index} />)
             }
          </div>
 

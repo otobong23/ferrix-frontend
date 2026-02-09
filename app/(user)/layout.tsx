@@ -2,6 +2,7 @@
 import LayoutWrapper from "@/components/user/LayoutWrapper";
 import AuthGuard from "@/components/AuthGuard";
 import { UserProvider } from "@/context/User.context";
+import { CrewProvider } from "@/context/Crew.context";
 
 function Layout({
   children,
@@ -12,7 +13,9 @@ function Layout({
     <div>
       <LayoutWrapper>
         <UserProvider>
-          {children}
+          <CrewProvider>
+            {children}
+          </CrewProvider>
         </UserProvider>
       </LayoutWrapper>
     </div>

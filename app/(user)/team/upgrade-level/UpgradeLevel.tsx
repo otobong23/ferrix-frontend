@@ -4,39 +4,53 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import c2 from '@/assets/imgs/c2.png'
 import f1_image from '@/assets/imgs/f1.png';
+import { useCrewData } from '@/context/Crew.context';
+import { useEffect, useMemo, useState } from 'react';
 
 
 const UpgradeLevel = () => {
+  const { crewData } = useCrewData()
   const router = useRouter()
-  const levels = [
-    {
-      level: 1,
-      reached: true,
-      requirements: {
-        referrals_required: 10,
-        team_members_required: 50,
-        reward: 10
-      }
-    },
-    {
-      level: 2,
-      reached: false,
-      requirements: {
-        referrals_required: 30,
-        team_members_required: 100,
-        reward: 30
-      }
-    },
-    {
-      level: 3,
-      reached: false,
-      requirements: {
-        referrals_required: 50,
-        team_members_required: 200,
-        reward: 100
-      }
-    },
-  ]
+  const [level_1_referrals, setLevel_1_referrals] = useState(0)
+  const [total_referrals, setTotal_referrals] = useState(0)
+
+  useEffect(() => {
+    if(crewData) {
+      setLevel_1_referrals(crewData.members.level_1.length)
+      setTotal_referrals(crewData.totalMembers)
+    }
+  }, [crewData])
+  
+  const levels = useMemo(() => [
+  {
+    level: 1,
+    reached: level_1_referrals >= 10 && total_referrals >= 50,
+    requirements: {
+      referrals_required: 10,
+      team_members_required: 50,
+      reward: 10
+    }
+  },
+  {
+    level: 2,
+    reached: level_1_referrals >= 30 && total_referrals >= 100,
+    requirements: {
+      referrals_required: 30,
+      team_members_required: 100,
+      reward: 30
+    }
+  },
+  {
+    level: 3,
+    reached: level_1_referrals >= 50 && total_referrals >= 200,
+    requirements: {
+      referrals_required: 50,
+      team_members_required: 200,
+      reward: 100
+    }
+  }
+], [level_1_referrals, total_referrals]);
+
   return (
     <div>
       <div className='flex bg-[#44474F] rounded-lg m-4'>
@@ -70,8 +84,8 @@ const UpgradeLevel = () => {
                 {lvl.reached ? <span className="text-[#4DB6AC]">Reached</span> : <span className="text-investor-gold">In Progress</span>}
               </h2>
               <p className="text-base font-bold text-[#F5F5F7]">Requirements</p>
-              <p className="text-[#F5F5F7]">LV. {lvl.level} referrals Required: <span className='font-bold'>0/{lvl.requirements.referrals_required}</span></p>
-              <p className="text-[#F5F5F7]">Team Members Required: <span className='font-bold'>0/{lvl.requirements.team_members_required}</span></p>
+              <p className="text-[#F5F5F7]">LV. {lvl.level} referrals Required: <span className='font-bold'>{level_1_referrals}/{lvl.requirements.referrals_required}</span></p>
+              <p className="text-[#F5F5F7]">Team Members Required: <span className='font-bold'>{total_referrals}/{lvl.requirements.team_members_required}</span></p>
               <p className="text-[#F5F5F7]">Reward: <span className='font-bold'>{lvl.requirements.reward.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span></p>
             </div>
           </div>

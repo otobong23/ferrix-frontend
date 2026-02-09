@@ -22,7 +22,7 @@ const Sidebar = () => {
                      {item.icon && (
                         <div className='flex items-center'>
                            <Icon icon={item.icon} className={`text-[40px] transition-all duration-300 hover:text-investor-gold ${isActive(item.link) ? 'text-investor-gold' : ''}`} />
-                           <h1 className={`text-2xl transition-all duration-300 hover:text-investor-gold ${isActive(item.link) ? 'text-investor-gold' : ''}`}>{item.name}</h1>
+                           <h1 className={`text-2xl capitalize transition-all duration-300 hover:text-investor-gold ${isActive(item.link) ? 'text-investor-gold' : ''}`}>{item.name}</h1>
                         </div>
                      )}
                      {item.image && <div className={`p-6 rounded-full bg-[#F5F5F7] transition-all duration-300 transform translate-x-8 ${isActive(item.link) ? 'bg-linear-to-br from-[#4DB6AC] to-investor-gold' : 'bg-[#F5F5F7]'}`}>

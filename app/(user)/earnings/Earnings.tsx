@@ -1,45 +1,265 @@
 'use client';
 import { Icon } from '@iconify-icon/react'
 import Image from 'next/image';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import gem from '@/assets/imgs/gem.png';
 import Link from 'next/link';
 import f1 from '@/assets/imgs/f1.png';
+import { showToast } from '@/utils/alert';
+import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@/context/User.context';
+import { updateProfileAPI } from '@/services/Profile';
+import { getTransactionsAPI, mineAPI } from '@/services/Transaction';
+
+const DURATION = 24 * 60 * 60 * 1000 //24 hours
+// const DURATION = 1 * 1 * 60 * 1000 //1 minutes
+
+const formatTime = (ms: number | null) => {
+   if (ms === null) return '--:--:--';
+   const totalSeconds = Math.floor(ms / 1000);
+   const h = Math.floor(totalSeconds / 3600);
+   const m = Math.floor((totalSeconds % 3600) / 60);
+   const s = totalSeconds % 60;
+   return `${h.toString().padStart(2, '0')}:${m
+      .toString()
+      .padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+};
+
 
 const Earnings = () => {
-   const [userID] = useState<String>("UserID24");
-   const [balance] = useState<Number>(200000)
-   const [miningAsset] = useState<Number>(360000)
-   const [crew] = useState<Number>(2)
-   const [commission] = useState<Number>(20)
-   const [isSpinning, setIsSpinning] = useState(false);
+   const router = useRouter();
+   const { userData, setUserData } = useUser()
+   const [userID, setUserID] = useState<String>("UserID24");
+   const [balance, setBalance] = useState<Number>(0)
+   const [miningAsset, setMiningAsset] = useState<Number>(0)
+   const [totalWithdrawn, setTotalWithdrawn] = useState<Number>(0)
+   const [commission, setComission] = useState<Number>(0)
+   const [crew, setCrew] = useState<Number>(2)
+   const [miningActivated, setMiningActivated] = useState(false);
+   const [timeLeft, setTimeLeft] = useState<number | null>(null);
+   const [wasActive, setWasActive] = useState(false)
 
-   // Calculate time REMAINING until 24 hours
-   const calculateTimeRemaining = (startTime: number) => {
-      const now = Date.now();
-      const elapsed = now - startTime;
-      const twentyFourHours = 24 * 60 * 60 * 1000;
-      // const fiveMinutes = 5 * 60 * 1000;
-      const remaining = twentyFourHours - elapsed;
+   // Add refs to prevent double execution
+   const isProcessingClaim = useRef(false);
+   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+   const hasInitialized = useRef(false);
 
-      if (remaining <= 0) {
-         return { hours: 0, minutes: 0, seconds: 0, canSpin: true };
+   const updateTimer = async (params: string) => {
+      try {
+         const response = await updateProfileAPI({ twentyFourHourTimerStart: params })
+         setUserData(response)
+      } catch (err) {
+         if (err instanceof AxiosError) {
+            showToast('error', err.response?.data.message)
+         } else {
+            showToast('error', 'An error occurred')
+         }
       }
-
-      const hours = Math.floor(remaining / (1000 * 60 * 60));
-      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-
-      return { hours, minutes, seconds, canSpin: false };
    }
 
-   const [timeLeft, setTimeLeft] = useState<{ hours: number, minutes: number, seconds: number, canSpin: boolean }>(() => {
-      // if (user && user.spinWheelTimerStart) {
-      //    return calculateTimeRemaining(user.spinWheelTimerStart);
-      // }
-      if (true) return calculateTimeRemaining(Date.now());
-      return { hours: 0, minutes: 0, seconds: 0, canSpin: true };
-   })
+   const [active, setActive] = useState(false)
+
+   const startTimer = useCallback(() => {
+      const now = Date.now();
+      updateTimer(now.toString()).then(() => {
+         setActive(true)
+      }).catch(() => {
+         setActive(false);
+         setTimeLeft(null);
+      });
+   }, []);
+
+   // useEffect(() => {
+   //    const fetchUser = async () => {
+   //       try {
+   //          const response = await authFetch.get<UserType>('/profile/'); // Make sure this returns the full user
+   //          setUserData(response.data);
+   //       } catch (err) {
+   //          console.error('Failed to fetch user on mount:', err);
+   //       }
+   //    };
+
+   //    fetchUser();
+   // }, []);
+
+   // Fixed timer logic with proper cleanup
+   useEffect(() => {
+      if (!userData || !userData.twentyFourHourTimerStart) return;
+      const startTime = userData.twentyFourHourTimerStart;
+
+      // Clear any existing interval
+      if (intervalRef.current) {
+         clearInterval(intervalRef.current);
+         intervalRef.current = null;
+      }
+
+      if (!startTime) {
+         setActive(false);
+         setTimeLeft(null);
+         setWasActive(false);
+         return;
+      }
+
+      const startTimeNum = parseInt(startTime);
+      if (isNaN(startTimeNum)) {
+         setActive(false);
+         setTimeLeft(null);
+         setWasActive(false);
+         return;
+      }
+
+      setActive(true);
+
+      const updateTimerState = () => {
+         const now = Date.now();
+         const endTime = startTimeNum + DURATION;
+         const diff = endTime - now;
+
+         if (diff <= 0) {
+            setTimeLeft(0);
+            setActive(false);
+
+            // Only set wasActive if we haven't already processed this completion
+            if (!isProcessingClaim.current) {
+               setWasActive(true);
+            }
+
+            if (intervalRef.current) {
+               clearInterval(intervalRef.current);
+               intervalRef.current = null;
+            }
+         } else {
+            setTimeLeft(diff);
+            setWasActive(false);
+         }
+      };
+
+      // Initial update
+      updateTimerState();
+
+      // Set up interval
+      intervalRef.current = setInterval(updateTimerState, 1000);
+
+      // Mark as initialized after first render
+      if (!hasInitialized.current) {
+         hasInitialized.current = true;
+      }
+
+      return () => {
+         if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+         }
+      };
+   }, [userData]); // Only depend on the timer value
+
+   function roundUpTo3Decimals(num: number) {
+      return Math.ceil(num * 1000) / 1000;
+   }
+
+   const handleTotalInvested = (param: UserPlan_Type[] = []) => param.reduce((total, plan) => {
+      const price = Number(plan.price);
+      return total + price;
+   }, 0)
+
+   const handleDailyYield = (param: UserPlan_Type[] = []) => param.reduce((total, plan) => {
+      const price = Number(plan.daily_rate);
+      return total + price;
+   }, 0);
+
+   const handleROI = (param: UserPlan_Type[] = []) => param.reduce((total, plan) => {
+      const price = Number(plan.total_revenue);
+      return total + price;
+   }, 0);
+
+   const handleMine = () => {
+      if (userData?.ActivateBot) {
+         if (!userData.currentPlan.length) {
+            showToast('info', 'you do not have an active plan')
+            return
+         }
+         if (timeLeft !== null && timeLeft > 0) return;
+
+         startTimer()
+      } else {
+         showToast('warning', 'Your account has been suspended. Please Vist Customer Care')
+      }
+   }
+
+   useEffect(() => {
+      if(userData){
+         setUserID(userData.userID)
+         setBalance(userData.balance)
+         setTotalWithdrawn(userData.totalWithdraw)
+         setMiningAsset(handleTotalInvested(userData.currentPlan))
+         setCrew(userData.referral_count ?? 0)
+      }
+   }, [userData])
+
+   const handleUseBalance = async () => {
+      if (isProcessingClaim.current) {
+         return; // Prevent double execution
+      }
+
+      isProcessingClaim.current = true;
+
+      try {
+         await mineAPI({ amount: handleDailyYield(userData?.currentPlan) });
+         showToast('success', 'Daily Yields Claimed successfully')
+      } catch (err) {
+         if (err instanceof AxiosError) {
+            showToast('error', err.response?.data.message)
+         } else {
+            showToast('error', 'An error occurred')
+         }
+      } finally {
+         isProcessingClaim.current = false;
+      }
+   };
+
+   // Set mining activated state
+   useEffect(() => {
+      setMiningActivated(active)
+   }, [active])
+
+   // Handle completion with proper cleanup
+   useEffect(() => {
+      if (wasActive && !isProcessingClaim.current) {
+         const delay = setTimeout(() => {
+            handleUseBalance().then(() => {
+               updateTimer('').then(() => {
+                  setWasActive(false);
+                  setActive(false);
+               });
+            });
+         }, 500); // wait 500ms before executing
+
+         return () => clearTimeout(delay); // cleanup
+      }
+   }, [wasActive])
+
+
+   const [transaction, setTransaction] = useState<UserTransaction[]>()
+   const getTransaction = async (page: number = 1) => {
+      try {
+         const response = await getTransactionsAPI({ limit: 10, page });
+         setTransaction(response.transactions)
+      } catch (err) {
+         if (err instanceof AxiosError) {
+            console.log(err)
+            showToast('error', err.response?.data.message)
+         } else {
+            console.error(err)
+            showToast('error', 'An error occurred during signup')
+         }
+      }
+   }
+   useEffect(() => {
+      getTransaction()
+   }, [])
+
+
    return (
       <div>
          <div className="flex items-center justify-between px-4 lg:pl-11 pt-4 mb-5 lg:mb-20">
@@ -77,7 +297,7 @@ const Earnings = () => {
                         <Icon icon="mdi:pickaxe" className="text-base lg:text-lg text-[#9EA4AA] leading-tight" />
                         <div className="flex flex-col">
                            <h1 className="text-[#9EA4AA] text-base lg:text-lg font-poppins">Total Withdrawn</h1>
-                           <h1 className="bg-linear-to-br from-[#4DB6AC] to-investor-gold bg-clip-text text-transparent text-base lg:text-lg font-poppins font-bold">{miningAsset.toLocaleString('en-US', { style: "currency", currency: "USD" })}</h1>
+                           <h1 className="bg-linear-to-br from-[#4DB6AC] to-investor-gold bg-clip-text text-transparent text-base lg:text-lg font-poppins font-bold">{totalWithdrawn.toLocaleString('en-US', { style: "currency", currency: "USD" })}</h1>
                         </div>
                      </div>
                   </div>
@@ -103,14 +323,17 @@ const Earnings = () => {
                <Image src={gem} alt='gem' className='object-cover mx-auto w-[171px] transform -translate-y-11' />
             </div>
             <p className='text-center mb-2.5'>Earnings: <span className='px-[15px] py-1 rounded-[20px] bg-[#4DB6AC]'>Running</span></p>
-            <p className='text-center mb-[27px]'>Time Remaining: <span className='text-investor-gold font-bold'>
-               {isSpinning
-                  ? 'Spinning...'
-                  : timeLeft.canSpin
-                     ? 'Spin now'
-                     : `Next Spin in ${timeLeft.hours.toString().padStart(2, '0')}:${timeLeft.minutes.toString().padStart(2, '0')}:${timeLeft.seconds.toString().padStart(2, '0')}`
-               }
-            </span></p>
+
+            <p className='flex justify-center items-center gap-1 text-lg font-semibold my-3'>
+               <span>{miningActivated ? <Icon icon='ri:hourglass-fill' className='text-investor-gold' /> : <Icon icon='gravity-ui:thunderbolt-fill' className='text-investor-gold' />}</span>
+               <span>{miningActivated ? 'Time Remaining:' + formatTime(timeLeft) : 'Daily Earnings'}</span>
+            </p>
+
+            <div className='flex flex-col'>
+               <button onClick={handleMine} disabled={miningActivated} className={`py-6 mx-5 text-[#E8E3D3] bg-investor-gold theme-button-effect-no-shadow rounded-[20px] ${miningActivated ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#0000CC]'} transition-colors duration-300 font-semibold text-lg mb-10`}>
+               Start Miner
+            </button>
+            </div>
 
             {/* packages bought could be arrayed and displayed here */}
             <div className={`bg-[url('/rectangle2.png')] bg-cover bg-no-repeat flex px-5 py-2 mx-5`}>

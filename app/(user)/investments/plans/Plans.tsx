@@ -6,11 +6,20 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { products } from '@/constant/product.constant';
 import ProductCard from '@/components/ProductCard';
+import PlanModal from '@/components/PlanModal';
 
 const Plans = () => {
    const router = useRouter()
    const [tier, setTier] = useState<'core tiers' | 'prime tiers'>('core tiers')
    const [filter, setFilter] = useState<string>('all');
+
+   const [purchaseDetails, setPurchaseDetails] = useState<Product_Type | null>(null)
+   const [confirmModal, setConfirmModal] = useState(false)
+
+   const handleClick = (product: Product_Type) => {
+      setConfirmModal(true)
+      setPurchaseDetails(product)
+   }
 
    const handleTier = useCallback((selectTier: 'core tiers' | 'prime tiers') => {
       setTier(selectTier)
@@ -24,6 +33,7 @@ const Plans = () => {
 
    return (
       <div>
+         <PlanModal purchaseDetails={purchaseDetails!} confirmModal={confirmModal} setConfirmModal={setConfirmModal} />
          <div className='flex bg-[#44474F] rounded-lg m-4'>
             <div className='flex-1 px-4 py-3'>
                <button onClick={() => router.back()} className='flex items-center'>
@@ -61,7 +71,7 @@ const Plans = () => {
 
          <div className="card_section mx-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
             {
-               products.map((product, index) => <ProductCard product={product} key={product + '_' + index} />)
+               products.map((product, index) => <ProductCard handleClick={() => handleClick(product)} product={product} key={product + '_' + index} />)
             }
          </div>
       </div>

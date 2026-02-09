@@ -38,7 +38,7 @@ export const DashboardMenus = [
    {
       title: 'Investments',
       icon: 'clarity:coin-bag-solid',
-      link: '/'
+      link: '/investments/your-investments'
    },
 ]
 
@@ -47,7 +47,7 @@ export const profile_links = [
    { name: 'Transactions', href: '/profile/transactions', icon: 'ic:round-history' },
    { name: 'Settings', href: '/profile/settings', icon: 'ic:round-settings' },
    { name: 'Help Center', href: '/profile/help-center', icon: 'fluent:person-call-20-filled' },
-   { name: 'Bank Details', href: '/profile/bank-details', icon: 'mdi:bank-outline' },
+   { name: 'Wallet Details', href: '/profile/bank-details', icon: 'streamline-freehand:crypto-currency-tether' },
    { name: 'Deposit', href: '/profile/deposit', icon: 'mage:plus-circle-fill' },
    { name: 'Withdraw', href: '/profile/withdraw', icon: 'zondicons:minus-solid' },
 ]
@@ -61,7 +61,7 @@ export const user_links = [
 export const security_center = [
    { name: 'Login Password', href: '/auth/password-reset', icon: 'solar:password-bold' },
    { name: 'Withdrawal Password', href: '/profile/security/withdrawal-password', icon: 'solar:key-bold' },
-   { name: 'Bank Details', href: '/profile/bank-details', icon: 'mdi:bank-outline' },
+   { name: 'Wallet Details', href: '/profile/bank-details', icon: 'streamline-freehand:crypto-currency-tether' },
 ]
 
 export const help_center = [

@@ -2,8 +2,13 @@
 
 import UI_header from "@/components/UI_header";
 import { withdrawRemark } from "@/constant/Remark.constant";
+import { useUser } from "@/context/User.context";
+import { withdrawAPI } from "@/services/Transaction";
+import { showToast } from "@/utils/alert";
 import { Icon } from "@iconify-icon/react";
-import { ChangeEvent, FormEvent, useCallback, useState } from "react";
+import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, MouseEvent, useCallback, useState } from "react";
 
 interface formStateType {
   amount: string;
@@ -12,6 +17,8 @@ interface formStateType {
 }
 
 const Withdraw = () => {
+  const router = useRouter()
+  const { userData } = useUser()
   const [formState, setFormState] = useState<formStateType>({
     amount: '',
     password: '',
@@ -20,14 +27,31 @@ const Withdraw = () => {
     setFormState(prev => ({ ...prev, [name]: value }))
   }, [])
 
-  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = useCallback(async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    // Object.entries(formState).forEach(([key, value]) => {
-    //   if(!value) alert(key)
-    // })
-    console.log('Form submitted:', formState)
+    if (!userData) return;
+    if (!userData.withdrawalWallet) {
+      showToast('warning', 'Please set up your withdrawal wallet in profile to use this feature')
+      return;
+    }
+    if (formState.password !== userData?.walletPassword) {
+      showToast('error', 'Incorrect wallet password');
+      return;
+    }
+    try {
+      const res = await withdrawAPI({ amount: Number(formState.amount), walletAddress: userData.withdrawalWallet })
+      showToast('success', res.messagge || 'Withdrawal Request sent successfully')
+      router.replace('/profile/transactions/')
+    } catch (err) {
+      console.error('Request Code error:', err);
+      const message =
+        err instanceof AxiosError
+          ? err.response?.data?.message || 'Unexpected API error'
+          : 'An unexpected error occurred';
+      showToast('error', message);
+    }
     // Add your form submission logic here
-  }, [formState])
+  }, [formState, userData])
 
   const [form_inputs, setForm_inputs] = useState([
     { name: 'amount', label: 'Enter withdrawal Amount', type: 'number', placeholder: 'Enter withdrawal Amount', required: true },
@@ -63,7 +87,7 @@ const Withdraw = () => {
                 <label htmlFor={details.name} className='text-xl text-[#F5F5F7]'>{details.label}</label>
                 <div className={`relative ${details.name === 'amount' ? "before:content-['$'] before:absolute before:left-3 before:top-3 before:text-xl before:text-[#F5F5F7] before:focus:text-[#62686E]" : ''}`}>
                   <input type={details.type} value={formState[details.name]} required={details.required} onChange={(e: ChangeEvent<HTMLInputElement>) => handleFormState(details.name, e.target.value)} name={details.name} id={details.name} className={`outline-0 border border-[#9EA4AA] px-3.5 py-3 rounded-xl placeholder:text-[#62686E] text-xl text-[#F5F5F7] w-full ${details.name === 'password' ? 'pr-10' : 'pl-8'}`} placeholder={details.placeholder} />
-                  {details.name === "password" && <button onClick={togglePasswordType} className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-3"><Icon icon={details.type === "password" ? "mdi:eye" : "mdi:eye-off"} width={20} /></button>}
+                  {details.name === "password" && <button type="button" onClick={togglePasswordType} className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-3"><Icon icon={details.type === "password" ? "mdi:eye" : "mdi:eye-off"} width={20} /></button>}
                 </div>
               </div>
             ))
@@ -82,7 +106,7 @@ const Withdraw = () => {
           </ol>
         </div>
 
-        <button className='flex items-center justify-center mx-4 my-6 py-2 text-lg text-white rounded-[10px] bg-investor-gold theme-button-effect'>Confirm</button>
+        <button type="button" onClick={handleSubmit} className='flex items-center justify-center mx-4 my-6 py-2 text-lg text-white rounded-[10px] bg-investor-gold theme-button-effect-no-shadow'>Confirm</button>
       </div>
     </div>
   )

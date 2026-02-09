@@ -3,27 +3,51 @@
 import { Icon } from '@iconify-icon/react'
 import Image from 'next/image'
 import f3 from '@/assets/imgs/f3.png'
-import { useCallback, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useCrewData } from '@/context/Crew.context';
+import copy from 'copy-to-clipboard';
+import { showToast } from '@/utils/alert';
 
 const Team = () => {
+   const { crewData } = useCrewData()
+   const [referralCode, setReferralCode] = useState<string>('')
    const [level, setLevel] = useState<number>(1)
    const handleLevel = useCallback((lvl: number) => { setLevel(lvl) }, [])
-   const referrals = {
+   const [copied1, setCopied1] = useState(false);
+   const [copied2, setCopied2] = useState(false)
+   const [referrals, setReferrals] = useState({
       Total_Referral: 0,
       Commission_Count: 0
-   }
+   })
 
-   const members = [
-      {
-         userId: '9847266',
-         level: 1
-      },
-      {
-         userId: '9847267',
-         level: 2
-      },
-   ]
+   useEffect(() => {
+      if(crewData) {
+         setReferralCode(crewData.ownerReferralCode)
+         setReferrals({
+            Total_Referral: crewData.totalMembers,
+            Commission_Count: 0
+         })
+      }
+   },[crewData])
+
+   const [members, setMembers] = useState<CrewMemberType[]>([])
+
+   useEffect(() => {
+      if(crewData) {
+         if(level === 1) setMembers(crewData.members.level_1);
+         if(level === 2) setMembers(crewData.members.level_2);
+         if(level === 3) setMembers(crewData.members.level_3);
+      }
+   },[crewData])
+
+   const handleCopy = (value: string, edit: Dispatch<SetStateAction<boolean>>) => {
+      copy(value);
+      edit(true);
+      showToast('success', "Copied Successfully")
+      setTimeout(() => edit(false), 2000);
+   };
+
    return (
       <div className=''>
          <div className='flex bg-[#44474F] rounded-lg m-4'>
@@ -62,15 +86,15 @@ const Team = () => {
             <div className='bg-[#2F3033] rounded-lg px-4 py-[13px] pb-7'>
                <h2 className='mb-[5px] text-sm text-[#F5F5F7]'>Referral Code</h2>
                <div className='px-2.5 py-[9px] bg-[#F5F5F7]/7 rounded-sm flex justify-between items-center'>
-                  <p className='text-[#F5F5F7] font-bold text-lg'>2878WR</p>
-                  <button className='px-[34px] py-[5px] bg-[#9EA4AA] rounded-xs text-black'>Copy</button>
+                  <p className='text-[#F5F5F7] font-bold text-lg'>{referralCode}</p>
+                  <button onClick={() => handleCopy(referralCode, setCopied1)} className='w-[100px] py-[5px] bg-[#9EA4AA] rounded-xs text-black'>{copied1 ? "Copied!" : "Copy"}</button>
                </div>
 
 
                <h2 className='mb-[5px] text-sm text-[#F5F5F7]'>Referral Link</h2>
                <div className='px-2.5 py-[9px] bg-[#F5F5F7]/7 rounded-sm flex justify-between items-center'>
-                  <p className='text-[#F5F5F7] text-sm w-3/5'>https//ferrix.com/pages/auth/register?reg=2878WR</p>
-                  <button className='px-[34px] py-[5px] bg-[#9EA4AA] rounded-xs text-black'>Copy</button>
+                  <p className='text-[#F5F5F7] text-sm w-3/5'>https//ferrix.com/pages/auth/register?reg={referralCode}</p>
+                  <button onClick={() => handleCopy(`https//ferrix.com/pages/auth/register?reg=${referralCode}`, setCopied2)} className='w-[100px] py-[5px] bg-[#9EA4AA] rounded-xs text-black'>{copied2 ? "Copied!" : "Copy"}</button>
                </div>
             </div>
          </div>
@@ -87,23 +111,26 @@ const Team = () => {
                      )
                   })
                }
-            </div>
+            </div>   
+            
+            <p className='text-center pb-3 text-[#44474F]'>{level == 1 ? 5 : level == 2 ? 2 : 1}%</p>
 
-            <div className='flex flex-col'>
+            <div className='flex flex-col gap-2'>
                {
                   members.map(member => (
-                     <div key={member.userId} className='py-5 px-6 flex items-center gap-3 bg-[#F5F5F7]/7 rounded-[15px]'>
+                     <div key={member.userID} className='py-5 px-6 flex items-center gap-3 bg-[#F5F5F7]/7 rounded-[15px]'>
                         <div className='w-[50px] h-[50px] rounded-full bg-[#C7C7C7] flex justify-center items-center'>
                            <Icon icon="fluent:person-12-filled" className='text-[#44474F] text-2xl' />
                         </div>
                         <div>
-                           <h1 className='text-[#C3C3C3] text-lg'>User_{member.userId}</h1>
+                           <h1 className='text-[#C3C3C3] text-lg'>User_{member.userID}</h1>
                            <p className='text-[#9EA4AA] text-sm'>Level {member.level}</p>
                         </div>
                      </div>
                   ))
                }
             </div>
+            {members.length === 0 && <p className='text-center text-[#44474F]'>No members on this level</p>}
          </div>
       </div>
    )
