@@ -1,4 +1,7 @@
-
+type withdrawalWallet = {
+  walletAddress: string;
+  amount: number;
+};
 
 interface UserMetaType {
   accessToken: string;
@@ -6,6 +9,7 @@ interface UserMetaType {
   email: string;
   sub: string;
   expires_at: number;
+  role: 'user' | 'admin';
 }
 
 

@@ -3,20 +3,34 @@ import Image from 'next/image'
 import c2 from '@/assets/imgs/c2.png'
 import { Icon } from '@iconify-icon/react'
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { products } from '@/constant/product.constant';
 import ProductCard from '@/components/ProductCard';
 import PlanModal from '@/components/PlanModal';
+import { useUser } from '@/context/User.context';
+import { showToast } from '@/utils/alert';
 
 const Plans = () => {
    const router = useRouter()
+   const { userData } = useUser()
+   const [earningTimerCheck, setEarningTimerCheck] = useState(false)
    const [tier, setTier] = useState<'core tiers' | 'prime tiers'>('core tiers')
    const [filter, setFilter] = useState<string>('all');
 
    const [purchaseDetails, setPurchaseDetails] = useState<Product_Type | null>(null)
    const [confirmModal, setConfirmModal] = useState(false)
 
+   useEffect(() => {
+      if (userData) {
+         setEarningTimerCheck(Boolean(userData.twentyFourHourTimerStart))
+      }
+   }, [userData])
+
    const handleClick = (product: Product_Type) => {
+      if (earningTimerCheck) {
+         showToast('error', 'Earnings are being mined now, please Buy your plans when the mining as ended');
+         return
+      }
       setConfirmModal(true)
       setPurchaseDetails(product)
    }

@@ -17,11 +17,10 @@ export async function updateProfileAPI(details: Partial<UserType>): Promise<User
    return res.data
 }
 
-export async function updatePlanAPI(product: Product_Type, expiringDate: Date) {
+export async function updatePlanAPI(product: Product_Type, expiring_At: string) {
    const { image, ...details } = product
    const res = await authFetch.patch("/profile/update-plan", {
-    ...details,
-    expiring_date: expiringDate.toDateString(),
+    ...details, expiring_At,
   })
    return res.data
 }

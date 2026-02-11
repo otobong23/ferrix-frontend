@@ -21,14 +21,14 @@ export async function loginResponse(response: AxiosResponse<any, any, {}>) {
     userID: response.data.userID,
     email: response.data.email,
     sub: response.data.sub,    //user._id
-    expires_at: response.data.user.expires_at
+    expires_at: response.data.user.expires_at,
+    role: 'user' as 'user'
   };
   const expiresAt = response.data.user.expires_at; // seconds
 
   localStorage.setItem("user", JSON.stringify(userData));
   localStorage.setItem("token", accessToken); // SINGLE SOURCE
   localStorage.setItem('tokenExpiresAt', expiresAt.toString());
-  localStorage.setItem('role', 'user')
 
   authFetch.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 

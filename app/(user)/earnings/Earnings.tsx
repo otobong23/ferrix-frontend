@@ -326,7 +326,7 @@ const Earnings = () => {
 
             <p className='flex justify-center items-center gap-1 text-lg font-semibold my-3'>
                <span>{miningActivated ? <Icon icon='ri:hourglass-fill' className='text-investor-gold' /> : <Icon icon='gravity-ui:thunderbolt-fill' className='text-investor-gold' />}</span>
-               <span>{miningActivated ? 'Time Remaining:' + formatTime(timeLeft) : 'Daily Earnings'}</span>
+               <span>{miningActivated ? 'Time Remaining: ' + formatTime(timeLeft) : 'Daily Earnings'}</span>
             </p>
 
             <div className='flex flex-col'>

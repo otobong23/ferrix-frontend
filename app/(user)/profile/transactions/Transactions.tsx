@@ -124,8 +124,13 @@ const Transactions = () => {
                         <h1 className='text-sm font-semibold mb-1 capitalize'>
                            {item.type === 'tier' ? 'rebate' : item.type} {item.status === 'pending' ? 'pending' : item.status === 'completed' ? 'successful' : 'failed'}
                         </h1>
-                        <p className='text-[#9EA4AA]'>${item.amount.toLocaleString()}</p>
                      </div>
+
+                     <div className='flex flex-col'>
+                        <p className='text-[#9EA4AA]'>Main Amount: ${item.amount.toLocaleString()}</p>
+                        {item.displayAmount && <p className='text-[#9EA4AA]'>Amount Recieved: ${item.displayAmount.toLocaleString()}</p>}
+                     </div>
+                     
                      <div className='flex justify-between text-xs font-normal text-[#9EA4AA]'>
                         <p>{formatInTimeZone(item.date ?? Date.now(), 'Africa/Lagos', 'HH:mm')}</p>
                         <p>{formatInTimeZone(item.date ?? Date.now(), 'Africa/Lagos', 'dd/MM/yy')}</p>

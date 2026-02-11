@@ -1,163 +1,243 @@
-import { useUser } from '@/context/User.context'
-import { updatePlanAPI } from '@/services/Profile'
-import { getPlanAPI } from '@/services/Transaction'
-import { showToast } from '@/utils/alert'
-import { AxiosError } from 'axios'
-import Image from 'next/image'
-import c2 from '@/assets/imgs/c2.png'
-import { Dispatch, SetStateAction, useState } from 'react'
+'use client';
 
-const PlanModal = ({ purchaseDetails, confirmModal, setConfirmModal }: { purchaseDetails: Product_Type, confirmModal: boolean, setConfirmModal: Dispatch<SetStateAction<boolean>> }) => {
-   const [processingModal, setProcessingModal] = useState(false)
-   const [seconds, setSeconds] = useState(0); // countdown
-   const { userData, setUserData } = useUser()
+import { useUser } from '@/context/User.context';
+import { updatePlanAPI } from '@/services/Profile';
+import { getPlanAPI } from '@/services/Transaction';
+import { AxiosError } from 'axios';
+import Image from 'next/image';
+import c2 from '@/assets/imgs/c2.png';
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
+import { useMutation } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
+const PlanModal = ({
+  purchaseDetails,
+  confirmModal,
+  setConfirmModal,
+}: {
+  purchaseDetails: Product_Type;
+  confirmModal: boolean;
+  setConfirmModal: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const { userData, refreshUser } = useUser();
 
-   const handleModalButton = async (action: 'proceed' | 'cancel') => {
-      if (action === 'cancel') {
-         return setConfirmModal(false);
-      }
+  const [processingModal, setProcessingModal] = useState(false);
+  const [seconds, setSeconds] = useState(0);
 
-      if (action === 'proceed') {
-         setConfirmModal(false);
+  /* ============================
+     COUNTDOWN EFFECT
+  ============================ */
+  useEffect(() => {
+    if (seconds <= 0) return;
 
-         try {
-            if (userData?.ActivateBot) {
-               await validateUserBalance();
-               await beginProcessing();
+    const timer = setInterval(() => {
+      setSeconds(prev => prev - 1);
+    }, 1000);
 
-               await startCountdown(10); // 30 seconds for demo
+    return () => clearInterval(timer);
+  }, [seconds]);
 
-               await finalizePurchase();
-            } else {
-               showToast('warning', 'Your account has been suspended. Please Vist Customer Care')
-            }
-         } catch (error: any) {
-            showToast('error', error.message || 'Something went wrong.');
-            setProcessingModal(false);
-         }
-      }
-   };
+  /* ============================
+     PURCHASE MUTATION
+  ============================ */
+  const purchaseMutation = useMutation({
+    mutationFn: async () => {
+      if (!purchaseDetails) throw new Error('Purchase details missing');
 
-   const validateUserBalance = (): Promise<void> => {
-      return new Promise((resolve, reject) => {
-         if (!userData?.balance || userData?.balance < (Number(purchaseDetails?.price) || 0)) {
-            reject(new Error('Insufficient deposit balance. Please fund your account.'));
-         } else {
-            resolve();
-         }
+      // Step 1: Deduct balance / register purchase
+      await getPlanAPI({
+        amount: Number(purchaseDetails.price),
+        plan: purchaseDetails.name,
       });
-   };
 
-   const beginProcessing = (): Promise<void> => {
-      return new Promise((resolve) => {
-         setProcessingModal(true);
-         resolve();
-      });
-   };
+      // Step 2: Calculate expiration
+      const expiringDate = new Date();
+      expiringDate.setDate(
+        expiringDate.getDate() +
+          purchaseDetails.contract_duration_in_days
+      );
 
-   const startCountdown = (duration: number): Promise<void> => {
-      return new Promise((resolve) => {
-         setSeconds(duration);
-         const countdown = setInterval(() => {
-            setSeconds((prev) => {
-               if (prev <= 1) {
-                  clearInterval(countdown);
-                  resolve();
-                  return 0;
-               }
-               return prev - 1;
-            });
-         }, 1000);
-      });
-   };
+      const expiring_At = expiringDate.toISOString();
 
+      // Step 3: Activate plan
+      return await updatePlanAPI(purchaseDetails, expiring_At);
+    },
 
-   const finalizePurchase = (): Promise<void> => {
-      return new Promise(async (resolve) => {
-         try {
-            const useBalance = await getPlanAPI({ amount: Number(purchaseDetails?.price), plan: purchaseDetails?.name || '' })
-            console.log(useBalance)
-            if (!purchaseDetails) throw new Error("Purchase details missing");
+    onMutate: () => {
+      toast.loading('Processing purchase...', { id: 'plan-purchase' });
+      setProcessingModal(true);
+      setSeconds(10); // demo countdown
+    },
 
-            const expiringDate = new Date();
-            expiringDate.setDate(
-               expiringDate.getDate() + purchaseDetails.contract_duration_in_days
-            );
+    onSuccess: (data) => {
+      refreshUser();
 
-            const response = await updatePlanAPI(
-               purchaseDetails,
-               expiringDate,
-            );
-            setUserData(response)
-            showToast('success', 'Your pack has been successfully activated. Daily yields will now begin.');
-         } catch (err) {
-            if (err instanceof AxiosError) {
-               showToast('error', err.response?.data.message)
-            } else {
-               showToast('error', 'An error occurred during signup')
-            }
-         }
-         setProcessingModal(false);
-         resolve();
-      });
-   };
+      toast.success(
+        'Your pack has been successfully activated. Daily yields will now begin.',
+        { id: 'plan-purchase' }
+      );
+    },
 
+    onError: (err: AxiosError<any> | Error) => {
+      toast.error(
+        err instanceof AxiosError
+          ? err.response?.data?.message || 'Purchase failed'
+          : err.message,
+        { id: 'plan-purchase' }
+      );
+    },
 
-   return (
-      <>
-         <div className={`fixed top-0 left-0 min-w-screen h-screen bg-black/70 z-99 items-center justify-center ${confirmModal ? 'flex' : 'hidden'}`}>
-            <div className={`py-[63px] px-[50px] w-full md:max-w-[400px] flex flex-col justify-center bg-no-repeat bg-top md:bg-cover bg-[url('/modal_image.png')]`}>
-               <div className="card_image">
-                  <Image src={purchaseDetails?.image ?? c2} alt="f1_image" className="object-cover w-32" />
-               </div>
+    onSettled: () => {
+      setProcessingModal(false);
+      setSeconds(0);
+    },
+  });
 
-               <div className="flex flex-col gap-2.5 items-start">
-                  <h1 className="font-bold text-white font-inria-sans text-5xl">{purchaseDetails?.name}</h1>
-                  <h2 className="text-base bg-[#50535B] inline-block rounded-sm p-1">
-                     <span className="bg-linear-to-br from-[#4DB6AC] to-investor-gold bg-clip-text text-transparent">{purchaseDetails?.package_level}</span>
-                  </h2>
-                  <p className="text-base font-bold text-[#F5F5F7]">{purchaseDetails?.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
-                  <p className="text-base text-[#F5F5F7]">
-                     <span>Contract Duration:</span>
-                     <span className="font-bold ml-1">{purchaseDetails?.contract_duration_in_days}Days</span>
-                  </p>
-                  <p className="text-base text-[#F5F5F7]">
-                     <span>Daily Rate:</span>
-                     <span className="font-bold ml-1">{purchaseDetails?.daily_rate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
-                  </p>
-                  <p className="text-base text-[#F5F5F7]">
-                     <span>Total Revenue:</span>
-                     <span className="font-bold ml-1">{purchaseDetails?.total_revenue.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
-                  </p>
-                  <div className='flex gap-2.5'>
-                     {(['proceed', 'cancel'] as ('proceed' | 'cancel')[]).map(item => (
-                        <button onClick={() => handleModalButton(item)} className="px-[15px] py-[5px] text-[#1D1D1F] text-base rounded-sm bg-linear-to-br outline-0 from-[#4DB6AC] to-investor-gold theme-button-effect">
-                           {item}
-                        </button>
-                     ))}
-                  </div>
-               </div>
+  /* ============================
+     HANDLE BUTTON
+  ============================ */
+  const handleModalButton = (action: 'proceed' | 'cancel') => {
+    if (action === 'cancel') {
+      setConfirmModal(false);
+      return;
+    }
+
+    if (!userData?.ActivateBot) {
+      toast.error(
+        'Your account has been suspended. Please visit Customer Care.'
+      );
+      return;
+    }
+
+    if (
+      !userData?.balance ||
+      userData.balance < Number(purchaseDetails?.price)
+    ) {
+      toast.error(
+        'Insufficient deposit balance. Please fund your account.'
+      );
+      return;
+    }
+
+    setConfirmModal(false);
+    purchaseMutation.mutate();
+  };
+
+  return (
+    <>
+      {/* ================= CONFIRM MODAL ================= */}
+      <div
+        className={`fixed top-0 left-0 min-w-screen h-screen bg-black/70 z-50 items-center justify-center ${
+          confirmModal ? 'flex' : 'hidden'
+        }`}
+      >
+        <div className="py-[63px] px-[50px] w-full md:max-w-[400px] flex flex-col justify-center bg-no-repeat bg-top md:bg-cover bg-[url('/modal_image.png')]">
+          <div>
+            <Image
+              src={purchaseDetails?.image ?? c2}
+              alt="plan_image"
+              className="object-cover w-32"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2.5 items-start">
+            <h1 className="font-bold text-white text-5xl">
+              {purchaseDetails?.name}
+            </h1>
+
+            <h2 className="text-base bg-[#50535B] rounded-sm p-1">
+              <span className="bg-linear-to-br from-[#4DB6AC] to-investor-gold bg-clip-text text-transparent">
+                {purchaseDetails?.package_level}
+              </span>
+            </h2>
+
+            <p className="font-bold text-white">
+              {purchaseDetails?.price.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+              })}
+            </p>
+
+            <p className="text-white">
+              Contract Duration:{' '}
+              <span className="font-bold">
+                {purchaseDetails?.contract_duration_in_days} Days
+              </span>
+            </p>
+
+            <p className="text-white">
+              Daily Rate:{' '}
+              <span className="font-bold">
+                {purchaseDetails?.daily_rate.toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })}
+              </span>
+            </p>
+
+            <p className="text-white">
+              Total Revenue:{' '}
+              <span className="font-bold">
+                {purchaseDetails?.total_revenue.toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })}
+              </span>
+            </p>
+
+            <div className="flex gap-2.5">
+              <button
+                onClick={() => handleModalButton('proceed')}
+                disabled={purchaseMutation.isPending}
+                className="px-[15px] py-[5px] rounded-sm bg-linear-to-br from-[#4DB6AC] to-investor-gold text-black disabled:opacity-50"
+              >
+                Proceed
+              </button>
+
+              <button
+                onClick={() => handleModalButton('cancel')}
+                className="px-[15px] py-[5px] rounded-sm bg-gray-400 text-black"
+              >
+                Cancel
+              </button>
             </div>
-         </div>
+          </div>
+        </div>
+      </div>
 
-         <div className={`fixed top-0 left-0 min-w-screen h-screen p-8 bg-black/70 z-99 items-center justify-center ${processingModal ? 'flex' : 'hidden'}`}>
-            <div className='w-full md:max-w-[400px] py-[75px] text-(--color2) text-sm rounded-4xl border-2 border-[#F5F5F552]/50 bg-white/5 backdrop-blur-sm flex flex-col item-center px-[50px]'>
-               <h1 className='text-center text-[40px] font-bold'>Processing</h1>
-               <p className='text-center flex flex-col items-center'>
-                  <span>Purchase processing & will be uploaded in</span>
-                  <span className='flex'>
-                     {seconds > 0 ? `${Math.floor(seconds / 60)}:${seconds % 60 < 10 ? '0' + (seconds % 60) : seconds % 60}` : '00:00'}
-                     <span className='w-5 h-5 border border-r-transparent border-amber-100 rounded-full flex items-center justify-center animate-spin'>
-                        <span className='w-3 h-3 block border border-l-transparent border-amber-100 rounded-full animate-spin'></span>
-                     </span>
-                  </span>
-               </p>
+      {/* ================= PROCESSING MODAL ================= */}
+      <div
+        className={`fixed top-0 left-0 min-w-screen h-screen p-8 bg-black/70 z-50 items-center justify-center ${
+          processingModal ? 'flex' : 'hidden'
+        }`}
+      >
+        <div className="w-full md:max-w-[400px] py-[75px] rounded-4xl border bg-white/5 backdrop-blur-sm flex flex-col px-[50px]">
+          <h1 className="text-center text-[40px] font-bold">
+            Processing
+          </h1>
 
-            </div>
-         </div>
-      </>
-   )
-}
+          <p className="text-center flex flex-col items-center">
+            <span>Purchase processing & will be uploaded in</span>
 
-export default PlanModal
+            <span className="flex items-center gap-2">
+              {seconds > 0
+                ? `00:${
+                    seconds < 10 ? '0' + seconds : seconds
+                  }`
+                : '00:00'}
+
+              <span className="w-5 h-5 border border-r-transparent rounded-full animate-spin" />
+            </span>
+          </p>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default PlanModal;

@@ -13,33 +13,36 @@ const Profile = () => {
   const [userID, setUserID] = useState('')
   const [username, setUsername] = useState('')
   const [phone, setPhone] = useState('N/A')
+  const [profileImage, setProfileImage] = useState('')
 
   useEffect(() => {
-    if(userData) {
+    if (userData) {
+      const { profileImage } = userData
+      if (profileImage) setProfileImage(profileImage)
       setUsername(userData.username)
       setUserID(userData.userID)
       setPhone(userData.whatsappNo || 'N/A')
     }
-  },[userData])
+  }, [userData])
 
   const balances = useMemo(() => ({
     Total_Balance: userData?.balance ?? 0,
     Total_Withdrawn: userData?.totalWithdraw ?? 0
   }), [userData])
 
-  
+
   return (
     <div>
       <div className='py-5 px-6 flex items-center gap-4 bg-[#44474F] rounded-lg mx-4 my-4'>
-        <div className='w-20 h-20 rounded-full bg-[#C7C7C7] flex justify-center items-center'>
-          <Icon icon="fluent:person-12-filled" className='text-[#44474F] text-4xl' />
+        <div className='w-20 h-20 rounded-full bg-[#C7C7C7] flex justify-center items-center overflow-hidden'>
+          {profileImage ? <img src={profileImage} alt='profile image' className='object-cover' /> : <Icon icon="fluent:person-12-filled" className='text-[#44474F] text-4xl' />}
         </div>
         <div>
           <h1 className='text-[#F5F5F7] font-bold text-2xl max-w-[150px] text-ellipsis whitespace-nowrap overflow-hidden'>{username}</h1>
           <p className='text-[#C3C3C3] text-lg'>ID: {userID}</p>
           <p className='text-[#C3C3C3] text-lg flex items-center gap-1.5'><span className="flex items-center"><Icon icon="solar:phone-outline" width="24" /></span> {phone}</p>
         </div>
-        <button className="px-2.5 py-[5px] rounded-sm bg-[#F5F5F7]/7 mt-auto theme-button-effect">ID Setup</button>
+        <Link href='/profile/settings' className="px-2.5 py-[5px] rounded-sm bg-[#F5F5F7]/7 mt-auto theme-button-effect">ID Setup</Link>
       </div>
 
       <div className='flex p-2 bg-[#2F3033] rounded-lg mx-4 mb-8'>
@@ -98,7 +101,7 @@ const Profile = () => {
 
         <h1 className="px-4 text-[#9EA4AA] text-3xl">System Settings</h1>
         <div className="flex flex-col bg-[#2F3033] px-4 py-3 rounded-lg gap-4 mb-2.5">
-          <Link href="/" className="flex items-center gap-1.5 theme-button-effect-no-shadow hover:underline">
+          <Link href="/profile/settings" className="flex items-center gap-1.5 theme-button-effect-no-shadow hover:underline">
             <Icon icon="iconamoon:profile-circle-fill" width={24} />
             <p className="text-xl">ID Setup</p>
             <Icon icon="weui:arrow-outlined" width="12" height="24" className="ml-auto text-[#9EA4AA]" />

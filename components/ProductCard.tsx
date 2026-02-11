@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-const ProductCard = ({ product, handleClick }: { product: Product_Type, handleClick: () => void }) => {
+const ProductCard = ({ product, handleClick, buttonDisable = false }: { product: Product_Type, handleClick: () => void, buttonDisable?: boolean }) => {
    return (
       <div className={`card flex border-[#FFFFFF]/40 border rounded-lg py-4`}>
          <div className="card_image">
@@ -28,9 +28,9 @@ const ProductCard = ({ product, handleClick }: { product: Product_Type, handleCl
          </div>
 
          <div className="card_activity ml-auto mr-5 flex items-end">
-            <button onClick={handleClick} className="px-[15px] py-[5px] text-[#1D1D1F] text-sm rounded-sm bg-linear-to-br from-[#4DB6AC] to-investor-gold theme-button-effect">
+            {!buttonDisable && <button onClick={handleClick} disabled={buttonDisable} className="px-[15px] py-[5px] text-[#1D1D1F] text-sm rounded-sm bg-linear-to-br from-[#4DB6AC] to-investor-gold theme-button-effect">
                Activate
-            </button>
+            </button>}
          </div>
       </div>
    )

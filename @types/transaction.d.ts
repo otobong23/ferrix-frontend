@@ -7,6 +7,7 @@ interface UserTransaction {
   email: string;
   type: TransactionType;
   amount: number;
+  displayAmount: number;
   image?: string;
   status: TransactionStatus;
   plan?: string

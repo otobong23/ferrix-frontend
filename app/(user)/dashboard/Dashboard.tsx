@@ -9,9 +9,11 @@ import { products } from "@/constant/product.constant";
 import ProductCard from "@/components/ProductCard";
 import { useAuth } from "@/context/Auth.context";
 import { useUser } from "@/context/User.context";
+import { useRouter } from "next/navigation";
 
 
 export default () => {
+   const router = useRouter()
    const { user } = useAuth()
    const { userData } = useUser()
    const [userID, setUserID] = useState<String>("UserID1");
@@ -101,7 +103,7 @@ export default () => {
 
          <div className="card_section mx-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
             {
-               products.map((product, index) => <ProductCard handleClick={() => console.log('dashbord product link clicked')} product={product} key={product + '_' + index} />)
+               products.slice(0, 2).map((product, index) => <ProductCard handleClick={() => router.push('/investments/plans')} product={product} key={product + '_' + index} />)
             }
          </div>
 

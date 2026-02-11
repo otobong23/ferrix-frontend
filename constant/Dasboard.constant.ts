@@ -65,6 +65,6 @@ export const security_center = [
 ]
 
 export const help_center = [
-   { name: 'Message Center', href: '/profile/security/login-password', icon: 'mdi:message' },
-   { name: 'Call Customer Care', href: '/profile/security/withdrawal-password', icon: 'ri:customer-service-fill' },
+   { name: 'Message Center', href: 'https://t.me/Ameliasofia01', icon: 'mdi:message' },
+   { name: 'Call Customer Care', href: 'https://t.me/Ameliasofia01', icon: 'ri:customer-service-fill' },
 ]
