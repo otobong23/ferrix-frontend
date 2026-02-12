@@ -1,5 +1,5 @@
 // components/Spinner.tsx
-import React from "react";
+'use client';
 
 interface SpinnerProps {
   fill?: string;
