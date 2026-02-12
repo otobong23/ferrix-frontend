@@ -24,3 +24,23 @@ export async function getTotalUsersAPI(): Promise<number> {
   return res.data
 }
 
+export async function getUsersAPI(limit = 50, page = 1): Promise<{
+  users: UserType[],
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}> {
+  const res = await authFetch.get(`/admin/users?limit=${limit}&page=${page}`)
+  return res.data
+}
+
+export async function viewUserAPI(email: string){
+  const res = await authFetch.get(`/admin/user/${email}`)
+  return res.data
+}
+
+export async function updateUserByAdminAPI(email: string, details: Partial<UserType>){
+  const res = await authFetch.patch(`/admin/user/${email}`, details)
+  return res.data
+}

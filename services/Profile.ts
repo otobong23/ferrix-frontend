@@ -13,7 +13,6 @@ export async function deleteProfileAPI() {
 
 export async function updateProfileAPI(details: Partial<UserType>): Promise<UserType> {
    const res = await authFetch.patch("/profile/update", details)
-   console.log(res.data)
    return res.data
 }
 
