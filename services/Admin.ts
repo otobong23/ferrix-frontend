@@ -81,3 +81,71 @@ export async function searchCrewAPI(keyword: string): Promise<CrewType> {
   const res = await authFetch.get(`/admin/search/crews?keyword=${keyword}`)
   return res.data
 }
+
+
+export async function getTransactionsAPI(limit = 50, page = 1): Promise<{
+  transaction: UserTransaction[],
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}> {
+  const res = await authFetch.get(`/admin/transactions?limit=${limit}&page=${page}`)
+  return res.data
+}
+
+export async function getUserTransactionsAPI(email: string, limit = 50, page = 1): Promise<{
+  transaction: UserTransaction[],
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  user: {
+    email: string;
+    balance: number;
+  }
+}> {
+  const res = await authFetch.get(`/admin/transactions/users?email=${email}&limit=${limit}&page=${page}`)
+  return res.data
+}
+
+export async function updateUserTransactionAPI(email: string, transactionID: string, details: updateTransactionType): Promise<UserTransaction> {
+  const res = await authFetch.patch(`/admin/transactions/update?email=${email}&transactionID=${transactionID}`, details)
+  return res.data
+}
+
+
+
+export async function detachUserAPI(userID: string): Promise<{
+  success: boolean;
+  message: string;
+  details: {
+    totalUsers: number;
+    deletedUsers: {
+      userID: string;
+      username: string;
+      level: number;
+    }[];
+    deletedCrews: number;
+    deletedTransactions: number;
+    errors: {
+      userID: string;
+      username: string;
+      error: string;
+    }[];
+  };
+}> {
+  const res = await authFetch.patch(`/admin/detachUser`, { userID })
+  return res.data
+}
+
+
+export async function globalDataAPI(): Promise<{
+  walletAddress: string;
+  whatsappLink: string;
+  telegramLink: string;
+  secondTelegramLink: string;
+}> {
+  const res = await authFetch.get("/admin/globalData/")
+  return res.data
+}

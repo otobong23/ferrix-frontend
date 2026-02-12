@@ -28,6 +28,12 @@ interface transactionResponseType {
   page: number
 }
 
+interface updateTransactionType {
+  status: 'completed' | 'failed';
+  amount?: number;
+  action?: 'minus' | 'add';
+}
+
 type Bank = {
   name: string;
   slug: string;
