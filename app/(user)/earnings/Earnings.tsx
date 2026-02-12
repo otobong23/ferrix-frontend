@@ -349,8 +349,8 @@ const Earnings = () => {
             </div>
 
             <div className='py-5 px-10 flex items-center gap-10 lg:gap-2.5 lg:w-[392px] mx-auto'>
-               <Link href='/' className={`flex-1 text-center py-2 rounded-lg text-lg transition-all duration-300 theme-button-effect-no-shadow capitalize text-black bg-investor-gold`}>Deposit</Link>
-               <Link href='/' className={`flex-1 text-center py-2 rounded-lg text-lg transition-all duration-300 theme-button-effect-no-shadow capitalize text-black bg-investor-gold`}>Withdraw</Link>
+               <Link href='/profile/deposit' className={`flex-1 text-center py-2 rounded-lg text-lg transition-all duration-300 theme-button-effect-no-shadow capitalize text-black bg-investor-gold`}>Deposit</Link>
+               <Link href='/profile/withdraw' className={`flex-1 text-center py-2 rounded-lg text-lg transition-all duration-300 theme-button-effect-no-shadow capitalize text-black bg-investor-gold`}>Withdraw</Link>
             </div>
          </div>
       </div>
