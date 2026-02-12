@@ -42,3 +42,5 @@ next-env.d.ts
 
 # details file
 OAuth.md
+
+gitpush.sh
