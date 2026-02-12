@@ -10,11 +10,17 @@ export async function loginAdminAPI(details: loginFormStateType,) {
 
 export async function getAdminAPI(): Promise<AdminType> {
   const res = await authFetch.get("/admin/profile/")
-   return res.data
+  return res.data
 }
 
 
 export async function updateAdminAPI(details: Partial<AdminType>): Promise<AdminType> {
   const res = await authFetch.patch("/admin/updateAdmin/", details)
-   return res.data
+  return res.data
 }
+
+export async function getTotalUsersAPI(): Promise<number> {
+  const res = await authFetch.get("/admin/totalUsers/")
+  return res.data
+}
+
