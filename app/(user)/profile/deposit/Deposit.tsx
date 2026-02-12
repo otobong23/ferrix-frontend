@@ -202,10 +202,10 @@ const Deposit = () => {
                      </div>
                   </div>
 
-                  <div className="px-2.5 py-3.5 rounded-lg bg-[#F5F5F7]/7 mx-4 flex justify-between">
-                     <p className="text-lg w-3/4 overflow-hidden text-ellipsis whitespace-nowrap">{address}</p>
+                  <div className="px-3 py-3.5 rounded-lg bg-[#F5F5F7]/7 mx-4 flex justify-between">
+                     <p className="text-xl w-3/4 overflow-hidden text-ellipsis whitespace-nowrap">{address}</p>
                      <button>
-                        <Icon icon="akar-icons:copy" className="text-3xl text-[#9EA4AA]" />
+                        <Icon icon="akar-icons:copy" className="text-4xl text-[#9EA4AA]" />
                      </button>
                   </div>
                </Fragment>
