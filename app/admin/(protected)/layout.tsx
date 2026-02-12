@@ -1,6 +1,7 @@
 'use client';
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminWrapper from "@/components/admin/AdminWrapper";
+import { AdminProvider } from "@/context/Admin.context";
 
 function Layout({
   children,
@@ -9,9 +10,11 @@ function Layout({
 }>) {
   return (
     <div>
-      <AdminWrapper>
-        {children}
-      </AdminWrapper>
+      <AdminProvider>
+        <AdminWrapper>
+          {children}
+        </AdminWrapper>
+      </AdminProvider>
     </div>
   );
 }
