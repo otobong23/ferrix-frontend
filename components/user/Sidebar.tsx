@@ -4,8 +4,10 @@ import { navbarList } from '@/constant/navList.constant'
 import Link from 'next/link'
 import { Icon } from '@iconify-icon/react'
 import { usePathname } from "next/navigation";
+import { useAuth } from '@/context/Auth.context'
 
 const Sidebar = () => {
+   const { logout } = useAuth()
    const pathname = usePathname();
    const isActive = (href: string) => pathname.includes(href);
    return (
@@ -32,7 +34,7 @@ const Sidebar = () => {
                </li>
             ))}
             <li>
-               <button className='flex items-center'>
+               <button className='flex items-center' onClick={logout}>
                   <span>
                      <Icon icon="ic:round-logout" className='text-[40px]' />
                   </span>

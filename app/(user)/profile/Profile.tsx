@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { logout } = useAuth();
   const { userData } = useUser();
   const [userID, setUserID] = useState('')
   const [username, setUsername] = useState('')
@@ -107,7 +107,7 @@ const Profile = () => {
             <Icon icon="weui:arrow-outlined" width="12" height="24" className="ml-auto text-[#9EA4AA]" />
           </Link>
 
-          <button className="flex items-center gap-1.5 theme-button-effect-no-shadow hover:underline">
+          <button className="flex items-center gap-1.5 theme-button-effect-no-shadow hover:underline" onClick={logout}>
             <Icon icon="majesticons:logout-line" width={24} />
             <p className="text-xl">Logout</p>
             <Icon icon="weui:arrow-outlined" width="12" height="24" className="ml-auto text-[#9EA4AA]" />
