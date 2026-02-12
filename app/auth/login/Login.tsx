@@ -133,7 +133,7 @@ const Login = () => {
         <GoogleLogin auth='login' />
       </div>
 
-      <p className='text-center text-[#6C7278]'>Already have an account? <Link href="/auth/signup" className='text-investor-gold ml-1'>Sign Up</Link></p>
+      <p className='text-center text-[#6C7278]'>Don't have an account? <Link href="/auth/signup" className='text-investor-gold ml-1'>Sign Up</Link></p>
     </div>
   )
 }
