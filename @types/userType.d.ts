@@ -9,7 +9,6 @@ interface UserMetaType {
   email: string;
   sub: string;
   expires_at: number;
-  role: 'user' | 'admin';
 }
 
 

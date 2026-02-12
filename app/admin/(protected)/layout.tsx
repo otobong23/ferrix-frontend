@@ -1,6 +1,8 @@
+'use client';
+import AdminGuard from "@/components/admin/AdminGuard";
 import AdminWrapper from "@/components/admin/AdminWrapper";
 
-export default function Layout({
+function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -13,3 +15,5 @@ export default function Layout({
     </div>
   );
 }
+
+export default AdminGuard(Layout)

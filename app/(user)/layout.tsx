@@ -1,6 +1,6 @@
 'use client';
 import LayoutWrapper from "@/components/user/LayoutWrapper";
-import AuthGuard from "@/components/AuthGuard";
+import UserGuard from "@/components/user/UserGuard";
 import { UserProvider } from "@/context/User.context";
 import { CrewProvider } from "@/context/Crew.context";
 
@@ -22,4 +22,4 @@ function Layout({
   );
 }
 
-export default AuthGuard(Layout)
+export default UserGuard(Layout)

@@ -1,15 +1,13 @@
 'use client';
 import Image from 'next/image'
 import logo from '@/assets/vectors/Logo.svg'
-import React, { ChangeEvent, FormEvent, useCallback, useState } from 'react'
+import { ChangeEvent, FormEvent, useCallback, useState } from 'react'
 import { Icon } from '@iconify-icon/react';
-import Link from 'next/link';
-import GoogleLogin from '@/components/google/GoogleLogin';
 import { showToast } from '@/utils/alert';
 import { useMutation } from '@tanstack/react-query';
-import { loginUserAPI } from '@/services/Authentication';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/Auth.context';
+import { loginAdminAPI } from '@/services/Admin';
 
 interface formStateType {
   email: string;
@@ -32,17 +30,20 @@ const Login = () => {
 
   // Signup mutation using React Query
   const loginMutation = useMutation({
-    mutationFn: (data: loginFormStateType) => loginUserAPI(data),
+    mutationFn: (data: loginFormStateType) => loginAdminAPI(data),
     onSuccess: (data) => {
       // Handle successful signup
       console.log('Login successful:', data);
       setUser(data);
 
+      localStorage.removeItem('userData')
+      localStorage.removeItem('crewData')
+
       // Show success message
       showToast('success', 'Account Logged in successfully!');
 
       // Redirect to dashboard
-      router.push('/dashboard');
+      router.push('/admin/dashboard');
     },
     onError: (error: any) => {
       // Handle error
@@ -81,7 +82,7 @@ const Login = () => {
   }, [formState, loginMutation])
 
   const [form_inputs, setForm_inputs] = useState([
-    { name: 'email', label: 'Email', type: 'email', placeholder: 'Loisbecket@gmail.com', required: true },
+    { name: 'email', label: 'Email', type: 'email', placeholder: 'Loisadmin@gmail.com', required: true },
     { name: 'password', label: 'Set Password', type: 'password', placeholder: '*******', required: true },
   ])
 
@@ -104,7 +105,7 @@ const Login = () => {
       </div>
 
       <h1 className='text-[#F5F5F7] font-inria-sans font-bold text-5xl mb-4'>Sign In to your</h1>
-      <h1 className='text-[#F5F5F7] font-inria-sans font-bold text-5xl mb-4'>Account</h1>
+      <h1 className='text-[#F5F5F7] font-inria-sans font-bold text-5xl mb-4'>Admin Account</h1>
       <p className='text-[#6C7278] text-sm'>Enter your email and password to log in</p>
 
       <form className='flex flex-col gap-4 pt-10' onSubmit={handleSubmit}>
@@ -114,26 +115,14 @@ const Login = () => {
               <label htmlFor={details.name} className='text-xl text-[#F5F5F7]'>{details.label}</label>
               <div className={`relative ${details.name === 'amount' ? "before:content-['$'] before:absolute before:left-3 before:top-3 before:text-xl before:text-[#F5F5F7] before:focus:text-[#62686E]" : ''}`}>
                 <input type={details.type} value={formState[details.name]} required={details.required} onChange={(e: ChangeEvent<HTMLInputElement>) => handleFormState(details.name, e.target.value)} name={details.name} id={details.name} className={`outline-0 border border-[#9EA4AA] px-4 py-3 rounded-xl placeholder:text-[#62686E] text-xl text-[#F5F5F7] w-full ${details.name === 'password' ? 'pr-10' : ''}`} placeholder={details.placeholder} />
-                {details.name === "password" && <button onClick={togglePasswordType} className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-3"><Icon icon={details.type === "password" ? "mdi:eye" : "mdi:eye-off"} width={20} /></button>}
+                {details.name === "password" && <button onClick={togglePasswordType} type='button' className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-3"><Icon icon={details.type === "password" ? "mdi:eye" : "mdi:eye-off"} width={20} /></button>}
               </div>
             </div>
           ))
         }
 
-        <Link href="/auth/password-reset" className='text-investor-gold text-right mt-1'>Forgot Password ?</Link>
-
         <button type='submit' className='flex items-center justify-center my-6 py-4 text-lg text-white rounded-[10px] bg-investor-gold theme-button-effect'>Login</button>
       </form>
-
-      <div className='flex justify-center relative my-3 before:content-[""] before:w-full before:h-0.5 before:bg-[#EDF1F3] before:top-1/2 before:-translate-y-1/2 before:absolute'>
-        <p className='px-4 bg-(--background) z-50'>Or</p>
-      </div>
-
-      <div className='pb-5'>
-        <GoogleLogin auth='login' />
-      </div>
-
-      <p className='text-center text-[#6C7278]'>Already have an account? <Link href="/auth/signup" className='text-investor-gold ml-1'>Sign Up</Link></p>
     </div>
   )
 }

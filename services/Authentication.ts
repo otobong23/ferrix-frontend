@@ -8,7 +8,7 @@ const clearAuthStorage = () => {
   // Add any other storage mechanisms you use
 };
 
-export async function loginResponse(response: AxiosResponse<any, any, {}>) {
+export async function loginResponse(response: AxiosResponse<any, any, {}>, role = 'user' as 'user' | 'admin') {
   const accessToken = response.data.access_token;
   // const refreshToken = response.data.result.refreshToken;
 
@@ -22,13 +22,13 @@ export async function loginResponse(response: AxiosResponse<any, any, {}>) {
     email: response.data.email,
     sub: response.data.sub,    //user._id
     expires_at: response.data.user.expires_at,
-    role: 'user' as 'user'
   };
   const expiresAt = response.data.user.expires_at; // seconds
 
   localStorage.setItem("user", JSON.stringify(userData));
   localStorage.setItem("token", accessToken); // SINGLE SOURCE
   localStorage.setItem('tokenExpiresAt', expiresAt.toString());
+  localStorage.setItem('role', role)
 
   authFetch.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 

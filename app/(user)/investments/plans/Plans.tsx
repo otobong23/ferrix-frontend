@@ -26,6 +26,16 @@ const Plans = () => {
       }
    }, [userData])
 
+   let currentPlans = products.filter(a =>
+      userData?.currentPlan?.some(b => b.name === a.name)
+   );
+
+   let previousPlans = products.filter(a =>
+      userData?.previousPlan?.some(b => b.name === a.name)
+   );
+
+   const alreadyBoughtPlans = [...currentPlans, ...previousPlans]
+
    const handleClick = (product: Product_Type) => {
       if (earningTimerCheck) {
          showToast('error', 'Earnings are being mined now, please Buy your plans when the mining as ended');
@@ -83,11 +93,30 @@ const Plans = () => {
             }
          </div>
 
-         <div className="card_section mx-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-            {
-               products.map((product, index) => <ProductCard handleClick={() => handleClick(product)} product={product} key={product + '_' + index} />)
-            }
-         </div>
+         {
+            tier === 'core tiers' ?
+               (<div className="card_section mx-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                  {
+                     filter === 'all' ?
+                        products.map((product, index) => {
+                           if (alreadyBoughtPlans.includes(product)) {
+                              return <ProductCard handleClick={() => handleClick(product)} product={product} key={product + '_' + index} buttonDisable />
+                           }
+                           return <ProductCard handleClick={() => handleClick(product)} product={product} key={product + '_' + index} />
+                        }) :
+                        products.filter(product => product.name.toLowerCase().includes(filter)).map((product, index) => {
+                           if (alreadyBoughtPlans.includes(product)) {
+                              return <ProductCard handleClick={() => handleClick(product)} product={product} key={product + '_' + index} buttonDisable />
+                           }
+                           return <ProductCard handleClick={() => handleClick(product)} product={product} key={product + '_' + index} />
+                        })
+                  }
+               </div>)
+               :
+               <div className='card_section mx-4'>
+                  <p className='text-center text-4xl font-bold opacity-80 mt-10'>Coming soon</p>
+               </div>
+         }
       </div>
    )
 }
