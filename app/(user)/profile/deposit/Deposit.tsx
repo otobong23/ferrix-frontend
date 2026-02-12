@@ -203,7 +203,7 @@ const Deposit = () => {
                   </div>
 
                   <div className="px-2.5 py-3.5 rounded-lg bg-[#F5F5F7]/7 mx-4 flex justify-between">
-                     <p className="text-lg">{address}</p>
+                     <p className="text-lg w-3/4 overflow-hidden text-ellipsis whitespace-nowrap">{address}</p>
                      <button>
                         <Icon icon="akar-icons:copy" className="text-3xl text-[#9EA4AA]" />
                      </button>
