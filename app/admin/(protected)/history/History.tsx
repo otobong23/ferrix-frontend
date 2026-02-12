@@ -37,6 +37,7 @@ const demoTranasctions: UserTransaction[] = [
     _id: '123',
     transactionID: '123',
     email: 'bonifacemiracle@gmail.com',
+    displayAmount: 30,
     type: 'bonus',
     amount: 100,
     status: 'completed',
