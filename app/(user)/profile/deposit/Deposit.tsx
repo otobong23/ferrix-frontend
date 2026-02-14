@@ -10,12 +10,15 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import {
    ChangeEvent,
+   Dispatch,
    Fragment,
    MouseEvent,
+   SetStateAction,
    useCallback,
    useState,
 } from "react";
 import { useMutation } from "@tanstack/react-query";
+import copy from 'copy-to-clipboard';
 
 interface formStateType {
    amount: string;
@@ -26,11 +29,19 @@ const Deposit = () => {
    const router = useRouter();
    const [order, setOrder] = useState<UserOrderType | null>(null)
    const [address, setAddress] = useState('N/A');
+   const [copied1, setCopied1] = useState(false);
    const [stack, setStack] = useState(1);
 
    const [formState, setFormState] = useState<formStateType>({
       amount: '',
    });
+
+   const handleCopy = (value: string, edit: Dispatch<SetStateAction<boolean>>) => {
+      copy(value);
+      edit(true);
+      showToast('success', "Copied Successfully")
+      setTimeout(() => edit(false), 2000);
+   };
 
    const handleFormState = useCallback((name: string, value: string) => {
       setFormState(prev => ({ ...prev, [name]: value }));
@@ -105,7 +116,7 @@ const Deposit = () => {
       },
    ];
 
-   const staticAmount = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
+   const staticAmount = [10, 20, 50, 100, 200, 500];
 
    const handleStaticAmount = useCallback(
       (amount: number) => {
@@ -187,7 +198,7 @@ const Deposit = () => {
                            })}
                         </span>
                      </p>
-                     <p className="text-center">
+                     <p className="text-center flex justify-center items-center gap-1">
                         <Icon icon="si:alert-fill" width="24" height="24" />
                         <span>Please Send Exactly the Amount Shown Above</span>
                      </p>
@@ -202,10 +213,13 @@ const Deposit = () => {
                      </div>
                   </div>
 
-                  <div className="px-3 py-3.5 rounded-lg bg-[#F5F5F7]/7 mx-4 flex justify-between">
-                     <p className="text-xl w-3/4 overflow-hidden text-ellipsis whitespace-nowrap">{address}</p>
-                     <button>
-                        <Icon icon="akar-icons:copy" className="text-4xl text-[#9EA4AA]" />
+                  <div className="px-3 py-3.5 rounded-lg bg-[#F5F5F7]/7 mx-4 flex items-center justify-between">
+                     <p className="text-xl w-3/4 text-wrap">{address}</p>
+                     <button onClick={() => handleCopy(address, setCopied1)}>
+                        {
+                           copied1 ? <Icon icon="iconamoon:check" width="24" height="24" /> :
+                              <Icon icon="akar-icons:copy" className="text-4xl text-[#9EA4AA]" />
+                        }
                      </button>
                   </div>
                </Fragment>

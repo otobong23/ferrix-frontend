@@ -1,9 +1,18 @@
 
 
-export default function Home() {
-  return (
-    <div>
-      <h1 className="font-inria-sans">hello world</h1>
-    </div>
-  );
+'use client';
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
+
+const page = () => {
+  const router = useRouter()
+  useEffect(() => {
+    router.replace('/auth/login')
+  })
+  // return (
+  //   <div>Landing Page</div>
+  // )
+  return null
 }
+
+export default page

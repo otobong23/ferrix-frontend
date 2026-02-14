@@ -93,8 +93,8 @@ const Team = () => {
 
                <h2 className='mb-[5px] text-sm text-[#F5F5F7]'>Referral Link</h2>
                <div className='px-2.5 py-[9px] bg-[#F5F5F7]/7 rounded-sm flex justify-between items-center'>
-                  <p className='text-[#F5F5F7] text-sm w-3/5'>https//ferrix.com/pages/auth/register?reg={referralCode}</p>
-                  <button onClick={() => handleCopy(`https//ferrix.com/pages/auth/register?reg=${referralCode}`, setCopied2)} className='w-[100px] py-[5px] bg-[#9EA4AA] rounded-xs text-black'>{copied2 ? "Copied!" : "Copy"}</button>
+                  <p className='text-[#F5F5F7] text-sm w-3/5'>https//ferrix.app/pages/login/register?invite={referralCode}</p>
+                  <button onClick={() => handleCopy(`https//ferrix.app/pages/login/register?invite=${referralCode}`, setCopied2)} className='w-[100px] py-[5px] bg-[#9EA4AA] rounded-xs text-black'>{copied2 ? "Copied!" : "Copy"}</button>
                </div>
             </div>
          </div>
