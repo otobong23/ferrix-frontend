@@ -9,7 +9,7 @@ export const depositRemark = [
 export const withdrawRemark = [
    'Minimum withdrawal: 12$',
    'Percentage Withdrawal Charge: 12%',
-   'Withdrawal time: Withdrawals are 9 to 5, Monday to Friday.',
+   'Withdrawal time: Withdrawals are 9am to 5pm, Monday to Friday.',
    'Under normal circumstances, Usdt withdrawals will be processed within 24-72hrs.',
    'Withdrawal wallet: Ensure that your wallet address is set up completely, if not your withdrawal will be denied.',
    'Note: Withdrawal must be withing the 9am to 5pm, Monday to Friday time frame.'
