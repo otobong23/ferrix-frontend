@@ -55,8 +55,8 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useUser = () => {
+export const useAdmin = () => {
   const ctx = useContext(AdminContext);
-  if (!ctx) throw new Error("useUser must be used inside UserProvider");
+  if (!ctx) throw new Error("useAdmin must be used inside UserProvider");
   return ctx;
 };

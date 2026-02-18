@@ -1,29 +1,42 @@
 'use client';
+import { useAdmin } from '@/context/Admin.context';
+import { getUserCrewAPI } from '@/services/Admin';
 import { Icon } from '@iconify-icon/react'
 import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const TeamId = () => {
+  const { adminData } = useAdmin()
   const router = useRouter()
   const { team_id } = useParams()
   const [level, setLevel] = useState<number>(1)
   const handleLevel = useCallback((lvl: number) => { setLevel(lvl) }, [])
 
-  const balances = {
-    Total_Balance: 0,
-    Total_Withdrawn: 0
-  }
+  const [crew, setCrew] = useState<CrewType | null>(null)
 
-  const members = [
-    {
-      userId: '9847266',
-      level: 1
-    },
-    {
-      userId: '9847267',
-      level: 2
-    },
-  ]
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!team_id) return;
+      const getCrew = await getUserCrewAPI(team_id?.toString())
+      setCrew(getCrew)
+    }
+    fetchData()
+  }, [adminData])
+
+  const [members, setMembers] = useState<CrewMemberType[]>([])
+
+  useEffect(() => {
+    if (crew) {
+      if (level === 1) setMembers(crew.members.level_1);
+      if (level === 2) setMembers(crew.members.level_2);
+      if (level === 3) setMembers(crew.members.level_3);
+    }
+  }, [crew])
+
+  const balances = useMemo(() => ({
+    Total_Deposit: crew?.totalCrewDeposits ?? 0,
+    Total_Withdrawn: crew?.totalCrewWithdrawals ?? 0
+  }), [crew])
 
   return (
     <div>
@@ -79,17 +92,17 @@ const TeamId = () => {
 
         <div className='flex flex-col gap-1.5'>
           {
-            members.map(member => (
-              <div key={member.userId} className='py-5 px-6 flex items-center gap-3 bg-[#F5F5F7]/7 rounded-[15px]'>
+            members.length ? members.map(member => (
+              <div key={member.userID} className='py-5 px-6 flex items-center gap-3 bg-[#F5F5F7]/7 rounded-[15px]'>
                 <div className='w-[50px] h-[50px] rounded-full bg-[#C7C7C7] flex justify-center items-center'>
                   <Icon icon="fluent:person-12-filled" className='text-[#44474F] text-2xl' />
                 </div>
                 <div>
-                  <h1 className='text-[#C3C3C3] text-lg'>User_{member.userId}</h1>
+                  <h1 className='text-[#C3C3C3] text-lg'>User_{member.userID}</h1>
                   <p className='text-[#9EA4AA] text-sm'>Level {member.level}</p>
                 </div>
               </div>
-            ))
+            )) : <p className="text-center text-sm text-white/60">No Users Found yet.</p>
           }
         </div>
       </div>

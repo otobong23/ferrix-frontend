@@ -23,6 +23,7 @@ interface CrewType {
   totalCrewWithdrawals: number;
   totalCrewTransactions: number;
   lastUpdated: string; // ISO date string
+  createdAt: string;
 }
 
 type CrewResponse = {

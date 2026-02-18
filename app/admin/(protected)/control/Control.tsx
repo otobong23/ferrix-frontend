@@ -1,35 +1,33 @@
 'use client';
+import { useAdmin } from '@/context/Admin.context';
+import { getCrewsAPI, getUsersAPI } from '@/services/Admin';
 import { Icon } from '@iconify-icon/react';
 import Link from 'next/link';
-import React, { useCallback, useState } from 'react'
-
-const members = [
-   {
-      teamId: '9847266',
-      createdDate: 1769470592557
-   },
-   {
-      teamId: '9847267',
-      createdDate: 1769470592557
-   },
-]
-const users = [
-   {
-      userId: '9847266',
-      level: 1
-   },
-   {
-      userId: '9847267',
-      level: 1
-   },
-]
+import React, { useCallback, useEffect, useState } from 'react'
 
 const Control = () => {
+   const { adminData } = useAdmin()
    const [tier, setTier] = useState<'team' | 'users'>('team')
    const handleTier = useCallback((selectTier: 'team' | 'users') => {
       setTier(selectTier)
    }, [])
    const isActiveTier = (checkTier: 'team' | 'users') => tier === checkTier;
+
+   const [Crews, setCrews] = useState<Array<CrewType>>([])
+
+   const [users, setUsers] = useState<Array<UserType>>([])
+
+   useEffect(() => {
+      const fetchData = async () => {
+         const getCrews = await getCrewsAPI()
+         setCrews(getCrews.crews)
+
+         const getUsers = await getUsersAPI()
+         setUsers(getUsers.users)
+      }
+      fetchData()
+   }, [adminData])
+
    return (
       <div>
          <div className="flex items-center justify-between px-4 lg:pl-11 pt-4 mb-5 lg:mb-20">
@@ -55,17 +53,17 @@ const Control = () => {
          {tier === "team" &&
             <div className='flex flex-col px-4 gap-1.5'>
                {
-                  members.map(member => (
-                     <Link href={`/admin/control/team/${member.teamId}`} key={member.teamId} className='py-5 px-6 flex items-center gap-3 bg-[#F5F5F7]/7 rounded-[15px]'>
+                  Crews.length ? Crews.map(member => (
+                     <Link href={`/admin/control/team/${member.userID}`} key={member.userID} className='py-5 px-6 flex items-center gap-3 bg-[#F5F5F7]/7 rounded-[15px]'>
                         <div className='w-[50px] h-[50px] rounded-full bg-[#C7C7C7] flex justify-center items-center'>
                            <Icon icon="fluent:person-12-filled" className='text-[#44474F] text-2xl' />
                         </div>
                         <div>
-                           <h1 className='text-[#C3C3C3] text-lg'>Team_{member.teamId}</h1>
-                           <p className='text-[#9EA4AA] text-sm'>1st Created on {new Date(member.createdDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).replace(',', '')}</p>
+                           <h1 className='text-[#C3C3C3] text-lg'>Team_{member.userID}</h1>
+                           <p className='text-[#9EA4AA] text-sm'>1st Created on {new Date(member.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).replace(',', '')}</p>
                         </div>
                      </Link>
-                  ))
+                  )) : <p className="text-center text-sm text-white/60">No Team Found yet.</p>
                }
             </div>
          }
@@ -73,17 +71,17 @@ const Control = () => {
          {tier === "users" &&
             <div className='flex flex-col px-4 gap-1.5'>
                {
-                  users.map(user => (
-                     <Link href={`/admin/control/users/${user.userId}`} key={user.userId} className='py-5 px-6 flex items-center gap-3 bg-[#F5F5F7]/7 rounded-[15px]'>
+                  users.length ? users.map(user => (
+                     <Link href={`/admin/control/users/${user.userID}`} key={user.userID} className='py-5 px-6 flex items-center gap-3 bg-[#F5F5F7]/7 rounded-[15px]'>
                         <div className='w-[50px] h-[50px] rounded-full bg-[#C7C7C7] flex justify-center items-center'>
                            <Icon icon="fluent:person-12-filled" className='text-[#44474F] text-2xl' />
                         </div>
                         <div>
-                           <h1 className='text-[#C3C3C3] text-lg'>User_{user.userId}</h1>
-                           <p className='text-[#9EA4AA] text-sm'>Level {user.level}</p>
+                           <h1 className='text-[#C3C3C3] text-lg'>User_{user.userID}</h1>
+                           <p className='text-[#9EA4AA] text-sm'>Level {user.meter}</p>
                         </div>
                      </Link>
-                  ))
+                  )) : <p className="text-center text-sm text-white/60">No Users Found yet.</p>
                }
             </div>
          }

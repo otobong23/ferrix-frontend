@@ -61,7 +61,7 @@ export async function getTotalCrewCountAPI(): Promise<number> {
   return res.data
 }
 
-export async function getCrewsAPI(limit = 50, page = 1): Promise<{
+export async function getCrewsAPI(limit = 100, page = 1): Promise<{
   crews: CrewType[],
   page: number;
   limit: number;
@@ -84,7 +84,7 @@ export async function searchCrewAPI(keyword: string): Promise<CrewType> {
 
 
 export async function getTransactionsAPI(limit = 50, page = 1): Promise<{
-  transaction: UserTransaction[],
+  transactions: UserTransaction[],
   page: number;
   limit: number;
   total: number;
@@ -94,8 +94,8 @@ export async function getTransactionsAPI(limit = 50, page = 1): Promise<{
   return res.data
 }
 
-export async function getUserTransactionsAPI(email: string, limit = 50, page = 1): Promise<{
-  transaction: UserTransaction[],
+export async function getUserTransactionsAPI({email, limit = 50, page = 1}: { email: string, limit: number, page: number}): Promise<{
+  transactions: UserTransaction[],
   page: number;
   limit: number;
   total: number;
@@ -136,6 +136,14 @@ export async function detachUserAPI(userID: string): Promise<{
   };
 }> {
   const res = await authFetch.patch(`/admin/detachUser`, { userID })
+  return res.data
+}
+
+export async function toggleUserBot(email: string): Promise<{
+  email: string;
+  ActivateBot: boolean;
+}> {
+  const res = await authFetch.patch(`/admin/toggleUserBot?email=${email}`)
   return res.data
 }
 
