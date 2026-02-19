@@ -158,7 +158,7 @@ const Signup = () => {
                 }
                 disabled={details.name === 'referral_code' && refCode ? true : false}
                 required={details.required} onChange={(e: ChangeEvent<HTMLInputElement>) => handleFormState(details.name, e.target.value)} name={details.name} id={details.name} className={`outline-0 border border-[#9EA4AA] px-4 py-3 rounded-xl placeholder:text-[#62686E] text-xl text-[#F5F5F7] w-full ${details.name === 'password' ? 'pr-10' : ''}`} placeholder={details.placeholder} />
-                {details.name === "password" && <button onClick={togglePasswordType} className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-3"><Icon icon={details.type === "password" ? "mdi:eye" : "mdi:eye-off"} width={20} /></button>}
+                {details.name === "password" && <button onClick={togglePasswordType} type='button' className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-3"><Icon icon={details.type === "password" ? "mdi:eye" : "mdi:eye-off"} width={20} /></button>}
               </div>
             </div>
           ))
