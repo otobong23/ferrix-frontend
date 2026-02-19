@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import copy from 'copy-to-clipboard';
 import { getTransactionsAPI, updateUserTransactionAPI } from "@/services/Admin";
 import Link from "next/link";
+import { useAdmin } from "@/context/Admin.context";
 
 const formatTime = (timestamp: string | number) => {
   const date = new Date(timestamp);
@@ -57,6 +58,7 @@ const getFilterType = (stack: number) => {
 
 
 const Transaction = () => {
+  const {refreshAdmin} = useAdmin()
   const router = useRouter()
   const [stack, setStack] = useState(1);
   const [status, setStatus] = useState<'approve' | 'decline' | null>(null)
@@ -141,6 +143,7 @@ const Transaction = () => {
       });
       const response = await getTransactionsAPI(100, 1);
       setTransaction(response.transactions);
+      refreshAdmin()
       showToast('success', `Transaction ${status}`);
       handleCancel()
     } catch (err) {
