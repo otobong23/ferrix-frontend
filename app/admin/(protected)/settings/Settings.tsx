@@ -48,7 +48,7 @@ const Settings = () => {
 
    const adminSettings_inputs = [
       { name: 'email', label: 'Email', type: 'email', placeholder: 'Loisbecket@gmail.com', required: true, editable: false },
-      { name: 'password', label: 'Password', type: 'password', placeholder: '*******', required: true, editable: true },
+      { name: 'password', label: 'Password', type: 'text', placeholder: '*******', required: true, editable: true },
       { name: 'whatsapp', label: 'WhatsApp Link', type: 'text', placeholder: '07012345678', required: false, editable: true },
       { name: 'telegram', label: 'Telegram Profile', type: 'text', placeholder: '@Loisbecket123', required: false, editable: true },
       { name: 'secondTelegramLink', label: 'Telegram Profile2', type: 'text', placeholder: '@Loisbecket1234', required: false, editable: true },
