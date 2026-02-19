@@ -3,37 +3,37 @@ export const DashboardMenus = [
    {
       title: 'About Us',
       icon: 'mdi:about',
-      link: '/'
+      link: '/about-us'
    },
    {
       title: 'Help center',
       icon: 'fluent:person-call-20-filled',
-      link: '/'
+      link: '/help-center'
    },
    {
       title: 'How it works',
       icon: 'streamline-ultimate:laptop-help-message-bold',
-      link: '/'
+      link: '/how-it-works'
    },
    {
       title: 'Growth',
       icon: 'streamline-flex:decent-work-and-economic-growth-solid',
-      link: '/'
+      link: '/growth'
    },
    {
       title: 'Daily check-in',
       icon: 'majesticons:checkbox-list',
-      link: '/'
+      link: '/daily-check-in'
    },
    {
       title: 'White Paper',
       icon: 'mdi:text-box-check',
-      link: '/'
+      link: '/white-paper'
    },
    {
       title: 'Onsite',
       icon: 'healthicons:machinery',
-      link: '/'
+      link: '/onsite'
    },
    {
       title: 'Investments',
