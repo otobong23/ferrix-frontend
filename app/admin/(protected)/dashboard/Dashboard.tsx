@@ -25,6 +25,7 @@ const Dashboard = () => {
             </button>
          </div>
 
+
          <div className='flex flex-col gap-4'>
             <aside className="flex flex-col gap-2 mx-4 py-3 lg:py-[35px] px-4 rounded-lg bg-[#4DB6AC]">
             <div className="flex items-center gap-0.5">
@@ -39,6 +40,7 @@ const Dashboard = () => {
             </div>
          </aside>
 
+
          <aside className="flex flex-col gap-2 mx-4 py-3 lg:py-[35px] px-4 rounded-lg bg-[#44474F]">
             <div className="flex items-center gap-0.5">
                <Icon icon="solar:money-bag-bold" className="text-xs text-[#4DB6AC] leading-tight" />
@@ -52,6 +54,7 @@ const Dashboard = () => {
             </div>
          </aside>
 
+
          <aside className="flex flex-col gap-2 mx-4 py-3 lg:py-[35px] px-4 rounded-lg bg-[#2F3033]">
             <div className="flex items-center gap-0.5">
                <Icon icon="solar:money-bag-bold" className="text-xs text-[#4DB6AC] leading-tight" />
@@ -64,6 +67,7 @@ const Dashboard = () => {
                <h1 className="text-[#9EA4AA] text-xs lg:text-base font-poppins">This <strong>Feb 1</strong></h1>
             </div>
          </aside>
+
 
          <aside className="flex flex-col gap-2 mx-4 py-3 lg:py-[35px] px-4 rounded-lg bg-[#2F3033]">
             <div className="flex items-center gap-0.5">
