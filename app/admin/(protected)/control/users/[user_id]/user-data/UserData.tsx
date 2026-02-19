@@ -71,7 +71,7 @@ const UserData = () => {
    const handleUserSettingsState = useCallback((name: string, value: string) => {
       setUserSettingsState(prev => ({ ...prev, [name]: value }))
    }, [])
-   const handleBankDetailsState = useCallback((name: string, value: string) => {
+   const handleWalletDetailsState = useCallback((name: string, value: string) => {
       setWalletDetails(prev => ({ ...prev, [name]: value }))
    }, [])
 
@@ -160,10 +160,7 @@ const UserData = () => {
                walletDetails_inputs.map(details => (
                   <div className='flex flex-col gap-2' key={details.name}>
                      <label htmlFor={details.name} className='text-xl text-[#F5F5F7]'>{details.label}</label>
-                     {details.name === "account_number" ?
-                        <input type={details.type} value={walletDetails[details.name]} inputMode="numeric" pattern="[0-9]*" required={details.required} onChange={(e: ChangeEvent<HTMLInputElement>) => handleBankDetailsState(details.name, e.target.value)} name={details.name} id={details.name} className='outline-0 border border-[#9EA4AA] px-3.5 py-3 rounded-xl placeholder:text-[#62686E] text-xl text-[#F5F5F7]' placeholder={details.placeholder} />
-                        : <input type={details.type} value={walletDetails[details.name]} disabled={!details.editable} required={details.required} onChange={(e: ChangeEvent<HTMLInputElement>) => handleBankDetailsState(details.name, e.target.value)} name={details.name} id={details.name} className='outline-0 border border-[#9EA4AA] px-3.5 py-3 rounded-xl placeholder:text-[#62686E] text-xl text-[#F5F5F7]' placeholder={details.placeholder} />
-                     }
+                     <input type={details.type} value={walletDetails[details.name]} disabled={!details.editable} required={details.required} onChange={(e: ChangeEvent<HTMLInputElement>) => handleWalletDetailsState(details.name, e.target.value)} name={details.name} id={details.name} className='outline-0 border border-[#9EA4AA] px-3.5 py-3 rounded-xl placeholder:text-[#62686E] text-xl text-[#F5F5F7]' placeholder={details.placeholder} />
                   </div>
                ))
             }

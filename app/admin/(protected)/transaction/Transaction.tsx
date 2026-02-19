@@ -205,7 +205,7 @@ const Transaction = () => {
           <button key={title} onClick={() => setStack(stackValue)} className={`py-2 px-7 text-[#EFEFEF] rounded-[15px] flex items-center justify-center transition-all duration-300 ${stack === stackValue ? 'bg-[#00273298]' : 'bg-[#002732]'}`}>{title}</button>
         ))}
       </div>
-      <div className='flex flex-col gap-3 overflow-scroll no-scrollbar max-w-[649px] mx-auto'>
+      <div className='flex flex-col gap-3 overflow-scroll no-scrollbar max-w-[649px] mx-auto px-4'>
         {filteredTransactions.length ? filteredTransactions.map((a, i) => {
           if (a.status === 'pending') return <Pending image={a.image ?? ''} _id={a._id} handleClick={handlebutton} key={a.email + i} email={a.email} type={a.type} amount={a.amount} updatedAt={a.updatedAt ?? ''} walletAddress={a.withdrawWalletAddress} accountName={a.accountName} accountNumber={a.accountNumber} bankName={a.bankName} oncopy={handleCopy} transactionID={a.transactionID ?? ''} />
           else return <Done key={a.email + i} email={a.email} type={a.type} amount={a.amount} updatedAt={a.updatedAt ?? ''} status={a.status} />
