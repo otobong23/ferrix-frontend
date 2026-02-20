@@ -3,7 +3,7 @@ export const DashboardMenus = [
    {
       title: 'About Us',
       icon: 'mdi:about',
-      link: '/about-us'
+      link: '/dashboard/about-us'
    },
    {
       title: 'Help center',
@@ -13,27 +13,27 @@ export const DashboardMenus = [
    {
       title: 'How it works',
       icon: 'streamline-ultimate:laptop-help-message-bold',
-      link: '/how-it-works'
+      link: '/dashboard/how-it-works'
    },
    // {
    //    title: 'Growth',
    //    icon: 'streamline-flex:decent-work-and-economic-growth-solid',
-   //    link: '/growth'
+   //    link: '/dashboard/growth'
    // },
    {
       title: 'Daily check-in',
       icon: 'majesticons:checkbox-list',
-      link: '/daily-check-in'
+      link: '/dashboard/daily-check-in'
    },
    {
       title: 'White Paper',
       icon: 'mdi:text-box-check',
-      link: '/white-paper'
+      link: '/dashboard/white-paper'
    },
    {
       title: 'Onsite',
       icon: 'healthicons:machinery',
-      link: '/onsite'
+      link: '/dashboard/onsite'
    },
    {
       title: 'Investments',

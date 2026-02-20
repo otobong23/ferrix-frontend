@@ -85,7 +85,7 @@ export default () => {
          <div className="grid grid-cols-4 md:grid-cols-8 px-4 justify-items-center gap-y-11 mb-8 md:mb-10">
             {
                DashboardMenus.map(menu => (
-                  <Link href={`/dashboard${menu.link}`} key={menu.icon} className="flex flex-col items-center theme-button-effect">
+                  <Link href={menu.link} key={menu.icon} className="flex flex-col items-center theme-button-effect">
                      <Icon icon={menu.icon} className="text-[#9EA4AA] text-[30px]" />
                      <p className="text-xs">{menu.title}</p>
                   </Link>
