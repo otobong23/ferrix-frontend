@@ -101,7 +101,7 @@ const Deposit = () => {
          }
 
          createDepositMutation.mutate();
-         router.replace('profile/transactions')
+         router.replace('/profile/transactions')
       },
       [stack, formState.amount, createOrderMutation, createDepositMutation]
    );
