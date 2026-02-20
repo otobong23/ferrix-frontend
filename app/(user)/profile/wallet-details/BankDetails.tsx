@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
 import { updateProfileAPI } from '@/services/Profile';
 import { useMutation } from '@tanstack/react-query';
+import { isAddress } from 'ethers';
 
 interface formStateType {
   withdrawal_wallet: string;
@@ -92,6 +93,12 @@ const BankDetails = () => {
         return;
       }
 
+      const isValid = isAddress(formState.withdrawal_wallet)
+      if(!isValid) {
+        toast.error('Invalid Wallet Address')
+        return;
+      }
+
       updateWalletMutation.mutate(formState.withdrawal_wallet);
     },
     [formState, userData, updateWalletMutation]
@@ -131,7 +138,7 @@ const BankDetails = () => {
 
   return (
     <div>
-      <UI_header title="BCD" description="Setup Wallet details" />
+      <UI_header title="Wallet" description="Setup Wallet details" />
 
       <form className="flex flex-col" onSubmit={handleSubmit}>
         <div className="px-4 flex flex-col gap-4">
@@ -180,6 +187,7 @@ const BankDetails = () => {
             </div>
           ))}
         </div>
+        <p className='text-center py-2'>Please Input your BEP20 Wallet Address</p>
 
         <button
           type="submit"
