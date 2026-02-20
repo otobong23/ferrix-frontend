@@ -60,3 +60,11 @@ export async function spinWheelAPI() {
    const res = await authFetch.get("/transaction/spin-wheel")
    return res.data
 }
+
+export async function getCheckInTransactionsAPI({ limit, page }: {
+   limit: number;
+   page: number;
+}): Promise<transactionResponseType> {
+   const res = await authFetch.get(`/transaction/check-in-transaction?limit=${limit}&page=${page}`)
+   return res.data
+}

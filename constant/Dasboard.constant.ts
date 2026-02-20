@@ -15,11 +15,11 @@ export const DashboardMenus = [
       icon: 'streamline-ultimate:laptop-help-message-bold',
       link: '/how-it-works'
    },
-   {
-      title: 'Growth',
-      icon: 'streamline-flex:decent-work-and-economic-growth-solid',
-      link: '/growth'
-   },
+   // {
+   //    title: 'Growth',
+   //    icon: 'streamline-flex:decent-work-and-economic-growth-solid',
+   //    link: '/growth'
+   // },
    {
       title: 'Daily check-in',
       icon: 'majesticons:checkbox-list',

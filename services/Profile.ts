@@ -28,3 +28,8 @@ export async function getCrewAPI():Promise<CrewType> {
    const res = await authFetch.get("/crew");
    return res.data
 }
+
+export async function sendSupportmailAPI(details:{email: string, name: string, message: string}) {
+   const res = await authFetch.post('/profile/support-mail', details)
+   return res.data
+}

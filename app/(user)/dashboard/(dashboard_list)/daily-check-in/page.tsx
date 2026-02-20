@@ -1,8 +1,9 @@
 import React from 'react'
+import CheckIn from './CheckIn'
 
 const page = () => {
   return (
-    <div>page</div>
+    <CheckIn />
   )
 }
 
