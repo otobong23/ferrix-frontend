@@ -29,7 +29,7 @@ const formatTime = (ms: number | null) => {
 
 const Earnings = () => {
    const router = useRouter();
-   const { userData, setUserData, loading } = useUser()
+   const { userData, setUserData, loading, refreshUser } = useUser()
    const [userID, setUserID] = useState<String>("UserID24");
    const [balance, setBalance] = useState<Number>(0)
    const [miningAsset, setMiningAsset] = useState<Number>(0)
@@ -71,6 +71,7 @@ const Earnings = () => {
 
       try {
          await updateTimer(now);
+         await refreshUser();
       } catch {
          setActive(false);
       }
@@ -90,6 +91,11 @@ const Earnings = () => {
    // }, []);
 
    // Fixed timer logic with proper cleanup
+
+   useEffect(() => {
+      refreshUser();
+   }, []);
+
    useEffect(() => {
       if (loading) return;
       if (!userData || !userData.twentyFourHourTimerStart) return;
@@ -215,6 +221,7 @@ const Earnings = () => {
 
       try {
          await mineAPI({ amount: handleDailyYield(userData?.currentPlan) });
+         await refreshUser();
          showToast('success', 'Daily Yields Claimed successfully')
       } catch (err) {
          if (err instanceof AxiosError) {

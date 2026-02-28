@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { getProfileAPI } from "@/services/Profile";
 
-export interface UserProfile extends UserType {}
+export interface UserProfile extends UserType { }
 
 interface UserContextType {
   userData: UserProfile | null;
@@ -22,24 +22,27 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const cached = localStorage.getItem("userData");
     if (cached && cached !== "undefined") {
-    try {
-      setUserData(JSON.parse(cached));
-    } catch (err) {
-      console.error("Invalid cached userData, clearing storage");
-      localStorage.removeItem("userData");
+      try {
+        setUserData(JSON.parse(cached));
+      } catch (err) {
+        console.error("Invalid cached userData, clearing storage");
+        localStorage.removeItem("userData");
+      }
     }
-  }
     setLoading(false);
   }, []);
 
   // Fetch latest from backend
   const refreshUser = async () => {
     try {
-      const res = await getProfileAPI()    // user profile Endpoint
+      setLoading(true);
+      const res = await getProfileAPI();
       setUserData(res);
       localStorage.setItem("userData", JSON.stringify(res));
     } catch (err) {
       console.error("Failed to refresh user profile");
+    } finally {
+      setLoading(false);
     }
   };
 
