@@ -46,7 +46,7 @@ export const DashboardMenus = [
 export const profile_links = [
    { name: 'Transactions', href: '/profile/transactions', icon: 'ic:round-history' },
    { name: 'Settings', href: '/profile/settings', icon: 'ic:round-settings' },
-   { name: 'Help Center', href: '/profile/help-center', icon: 'fluent:person-call-20-filled' },
+   { name: 'Help Center', href: '/dashboard/help-center', icon: 'fluent:person-call-20-filled' },
    { name: 'Wallet Details', href: '/profile/wallet-details', icon: 'streamline-freehand:crypto-currency-tether' },
    { name: 'Deposit', href: '/profile/deposit', icon: 'mage:plus-circle-fill' },
    { name: 'Withdraw', href: '/profile/withdraw', icon: 'zondicons:minus-solid' },
