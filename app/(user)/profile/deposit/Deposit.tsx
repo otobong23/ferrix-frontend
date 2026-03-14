@@ -214,7 +214,7 @@ const Deposit = () => {
                   </div>
 
                   <div className="px-3 py-3.5 rounded-lg bg-[#F5F5F7]/7 mx-4 flex items-center justify-between">
-                     <p className="text-xl w-3/4 text-wrap">{address}</p>
+                     <p className="text-xl w-3/4 break-all whitespace-normal">{address}</p>
                      <button onClick={() => handleCopy(address, setCopied1)}>
                         {
                            copied1 ? <Icon icon="iconamoon:check" width="24" height="24" /> :
