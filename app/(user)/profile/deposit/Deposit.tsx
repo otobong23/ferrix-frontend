@@ -57,6 +57,7 @@ const Deposit = () => {
       onSuccess: (response) => {
          setOrder(response.order);
          setAddress(response.order.address);
+         if(response.order.invoice_url) router.push(response.order.invoice_url)
          setStack(2);
       },
 
