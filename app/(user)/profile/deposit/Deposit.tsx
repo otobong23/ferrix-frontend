@@ -103,7 +103,7 @@ const Deposit = () => {
                toast.error('Amount should be at least $15');
                return;
             }
-            createOrderMutation.mutate(Number(formState.amount) + (Number(formState.amount) * 0.015));
+            createOrderMutation.mutate(Number(formState.amount) + (Number(formState.amount) * 0.015)); // Adding a 1.5% extra amount to cover transaction fees
             return;
          }
 
