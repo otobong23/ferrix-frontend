@@ -28,7 +28,7 @@ const CountdownTimer = ({ onExpire }: { onExpire?: () => void }) => {
     <div className="flex flex-col items-center gap-1 mx-4 mt-4 px-3 py-3.5 rounded-lg bg-[#F5F5F7]/7">
       <p className="text-sm text-[#9EA4AA]">Order expires in</p>
       <p className={`text-2xl font-bold tabular-nums tracking-widest ${isUrgent ? 'text-red-400' : 'text-[#4DB6AC]'}`}>
-        {minutes}:{seconds}
+        {minutes}:{seconds} minutes
       </p>
       {secondsLeft <= 0 && (
         <p className="text-sm text-red-400">Order expired. Please create a new one.</p>
