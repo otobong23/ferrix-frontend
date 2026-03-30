@@ -123,7 +123,7 @@ const Deposit = () => {
       },
    ];
 
-   const staticAmount = [10, 20, 50, 100, 200, 500];
+   const staticAmount = [15, 20, 50, 100, 200, 500];
 
    const handleStaticAmount = useCallback(
       (amount: number) => {
