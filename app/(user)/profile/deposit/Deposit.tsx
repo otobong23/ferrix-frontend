@@ -19,6 +19,7 @@ import {
 } from "react";
 import { useMutation } from "@tanstack/react-query";
 import copy from 'copy-to-clipboard';
+import CountdownTimer from "@/components/CountdownTimer";
 
 interface formStateType {
    amount: string;
@@ -223,6 +224,8 @@ const Deposit = () => {
                         }
                      </button>
                   </div>
+
+                  <CountdownTimer onExpire={() => router.replace('/profile/transactions')} />
                </Fragment>
             )}
 
