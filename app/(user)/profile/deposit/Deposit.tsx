@@ -20,6 +20,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import copy from 'copy-to-clipboard';
 import CountdownTimer from "@/components/CountdownTimer";
+import toast from "react-hot-toast";
 
 interface formStateType {
    amount: string;
@@ -98,6 +99,10 @@ const Deposit = () => {
          e.preventDefault();
 
          if (stack === 1) {
+            if (!formState.amount || Number(formState.amount) < 15) {
+               toast.error('Amount should be at least $15');
+               return;
+            }
             createOrderMutation.mutate(Number(formState.amount));
             return;
          }
@@ -182,7 +187,7 @@ const Deposit = () => {
                   </div>
 
                   <p className="px-2.5 py-3.5 rounded-sm bg-[#F5F5F7]/7 mx-4">
-                     Amount should be equal to Price of Tiers Selected
+                     Amount should be at least equal to the Price of Tiers Selected
                   </p>
                </Fragment>
             )}

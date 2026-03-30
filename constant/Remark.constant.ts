@@ -1,6 +1,7 @@
 
 
 export const depositRemark = [
+   'Minimum deposit: 15$',
    'Please do not add assets to accounts other than the official account, otherwise the assets will not be retrieved.',
    'The Deposit amount must be exactly the same as the actual order amount',
    'The Deposit arrival time is based on the bank arrival time. It usually arrives within 5-10 minutes. If it does not arrive after more than 48 hours, please contact the manager for verification.'
