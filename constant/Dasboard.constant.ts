@@ -8,7 +8,7 @@ export const DashboardMenus = [
    {
       title: 'Help center',
       icon: 'fluent:person-call-20-filled',
-      link: '/help-center'
+      link: '/dashboard/help-center'
    },
    {
       title: 'How it works',
