@@ -19,7 +19,7 @@ export async function createOrderAPI(details: {
 
 export async function createDepositTransactionAPI(details: {
    orderID: string;
-}): Promise<{message: string, transaction: TransactionType}> // promise of the deposit address
+}): Promise<{message: string, transaction: TransactionType, redirect: boolean}> // promise of the deposit address
 {
    const res = await authFetch.post("/transaction/create-deposit-transaction", details)
    return res.data

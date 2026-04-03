@@ -81,7 +81,8 @@ const Deposit = () => {
          createDepositTransactionAPI({ orderID: order?._id || '' }),
 
       onSuccess: (res) => {
-         showToast('success', res.message);
+         if (res.redirect) console.log(res.message);    // No need to redirect as the user will be redirected automatically from the codes below
+         else showToast('success', res.message);
       },
 
       onError: (err) => {
