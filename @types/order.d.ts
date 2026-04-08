@@ -4,6 +4,7 @@ interface UserOrderType {
    email: string;
    status: 'pending' | 'completed' | 'failed';
    coin: 'USDT';
+   network: 'BEP20' | 'TRC20'
    address: string;
    invoice_url: string;
    ipn_callback_url: string;

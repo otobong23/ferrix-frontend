@@ -133,6 +133,11 @@ const Deposit = () => {
       [handleFormState]
    );
 
+   const getFee = (network: 'BEP20' | 'TRC20') => {
+      if (network === 'BEP20') return 0.2    // $0.2 fee
+      else return 1     // $1 fee
+   }
+
    const isLoading =
       createOrderMutation.isPending || createDepositMutation.isPending;
 
@@ -199,7 +204,7 @@ const Deposit = () => {
                      <p className="text-center">
                         Deposit Amount:{' '}
                         <span className="text-[#4DB6AC]">
-                           {Number(order?.displayAmount || 0).toLocaleString('en-US', {
+                           {Number(Number(order?.displayAmount) + getFee(order?.network || 'BEP20') || 0).toLocaleString('en-US', {
                               style: 'currency',
                               currency: 'USD',
                               maximumFractionDigits: 3,
@@ -211,7 +216,7 @@ const Deposit = () => {
                         <span>Please Send Exactly the Amount Shown Above</span>
                      </p>
                      <p className="text-center">
-                        Network : <span className="text-[#4DB6AC]">USDT</span>
+                        Network : <span className="text-[#4DB6AC]">USDT {order?.network}</span>
                      </p>
                   </div>
 
