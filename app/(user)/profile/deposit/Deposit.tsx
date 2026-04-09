@@ -204,7 +204,7 @@ const Deposit = () => {
                      <p className="text-center">
                         Deposit Amount:{' '}
                         <span className="text-[#4DB6AC]">
-                           {Number(Number(order?.displayAmount) + getFee(order?.network || 'BEP20') || 0).toLocaleString('en-US', {
+                           {Number(order?.displayAmount || 0).toLocaleString('en-US', {
                               style: 'currency',
                               currency: 'USD',
                               maximumFractionDigits: 3,
