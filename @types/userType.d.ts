@@ -30,6 +30,8 @@ type UserType = {
   referral_code: string;
   referredBy?: string;
   referral_count?: number;
+  referral_reward_count: number;
+  referral_reward_count_recieved: boolean;
   depositAddress: string;
   usdtWallet: string;
   bankName: string;

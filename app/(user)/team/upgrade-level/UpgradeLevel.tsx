@@ -6,17 +6,19 @@ import c2 from '@/assets/imgs/c2.png'
 import f1_image from '@/assets/imgs/f1.png';
 import { useCrewData } from '@/context/Crew.context';
 import { useEffect, useMemo, useState } from 'react';
+import { useUser } from '@/context/User.context';
 
 
 const UpgradeLevel = () => {
   const { crewData } = useCrewData()
+  const { userData } = useUser()
   const router = useRouter()
   const [level_1_referrals, setLevel_1_referrals] = useState(0)
   const [total_referrals, setTotal_referrals] = useState(0)
 
   useEffect(() => {
     if(crewData) {
-      setLevel_1_referrals(crewData.members.level_1.length)
+      setLevel_1_referrals(userData?.referral_reward_count ?? 0)
       setTotal_referrals(crewData.totalMembers)
     }
   }, [crewData])
@@ -84,7 +86,7 @@ const UpgradeLevel = () => {
                 {lvl.reached ? <span className="text-[#4DB6AC]">Reached</span> : <span className="text-investor-gold">In Progress</span>}
               </h2>
               <p className="text-base font-bold text-[#F5F5F7]">Requirements</p>
-              <p className="text-[#F5F5F7]">LV. {lvl.level} referrals Required: <span className='font-bold'>{level_1_referrals}/{lvl.requirements.referrals_required}</span></p>
+              <p className="text-[#F5F5F7]">LV. {lvl.level} verified referrals Required: <span className='font-bold'>{level_1_referrals}/{lvl.requirements.referrals_required}</span></p>
               <p className="text-[#F5F5F7]">Team Members Required: <span className='font-bold'>{total_referrals}/{lvl.requirements.team_members_required}</span></p>
               <p className="text-[#F5F5F7]">Reward: <span className='font-bold'>{lvl.requirements.reward.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span></p>
             </div>

@@ -7,9 +7,7 @@ import Link from 'next/link';
 import f1 from '@/assets/imgs/f1.png';
 import { showToast } from '@/utils/alert';
 import { AxiosError } from 'axios';
-import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/User.context';
-import { updateProfileAPI } from '@/services/Profile';
 import { getTransactionsAPI, mineAPI } from '@/services/Transaction';
 
 const DURATION = 24 * 60 * 60 * 1000 //24 hours
@@ -28,8 +26,7 @@ const formatTime = (ms: number | null) => {
 
 
 const Earnings = () => {
-   const router = useRouter();
-   const { userData, setUserData, loading, refreshUser } = useUser()
+   const { userData, loading, refreshUser } = useUser()
    const [userID, setUserID] = useState<String>("UserID24");
    const [balance, setBalance] = useState<Number>(0)
    const [miningAsset, setMiningAsset] = useState<Number>(0)
@@ -38,18 +35,13 @@ const Earnings = () => {
    const [crew, setCrew] = useState<Number>(2)
    const [miningActivated, setMiningActivated] = useState(false);
    const [timeLeft, setTimeLeft] = useState<number | null>(null);
-   const [wasActive, setWasActive] = useState(false)
 
-   // Add refs to prevent double execution
-   const isProcessingClaim = useRef(false);
-   const processedTimerRef = useRef<string | null>(null);
    const intervalRef = useRef<NodeJS.Timeout | null>(null);
-   const hasInitialized = useRef(false);
 
-   const updateTimer = async (params: string) => {
+   const updateTimer = async () => {
       try {
-         const response = await updateProfileAPI({ twentyFourHourTimerStart: params })
-         setUserData(response)
+         const response = await mineAPI()
+         refreshUser();
       } catch (err) {
          if (err instanceof AxiosError) {
             showToast('error', err.response?.data.message)
@@ -62,35 +54,16 @@ const Earnings = () => {
    const [active, setActive] = useState(false)
 
    const startTimer = useCallback(async () => {
-      if (active) return; // guard
-
-      const now = Date.now().toString();
-
-      setActive(true);          // optimistic UI
-      processedTimerRef.current = null;
+      if (active) return;
+      setActive(true);
 
       try {
-         await updateTimer(now);
+         await updateTimer();
          await refreshUser();
       } catch {
          setActive(false);
       }
    }, [active]);
-
-   // useEffect(() => {
-   //    const fetchUser = async () => {
-   //       try {
-   //          const response = await authFetch.get<UserType>('/profile/'); // Make sure this returns the full user
-   //          setUserData(response.data);
-   //       } catch (err) {
-   //          console.error('Failed to fetch user on mount:', err);
-   //       }
-   //    };
-
-   //    fetchUser();
-   // }, []);
-
-   // Fixed timer logic with proper cleanup
 
    useEffect(() => {
       refreshUser();
@@ -101,7 +74,6 @@ const Earnings = () => {
       if (!userData || !userData.twentyFourHourTimerStart) return;
       const startTime = userData.twentyFourHourTimerStart;
 
-      // Clear any existing interval
       if (intervalRef.current) {
          clearInterval(intervalRef.current);
          intervalRef.current = null;
@@ -110,7 +82,6 @@ const Earnings = () => {
       if (!startTime) {
          setActive(false);
          setTimeLeft(null);
-         setWasActive(false);
          return;
       }
 
@@ -118,7 +89,6 @@ const Earnings = () => {
       if (isNaN(startTimeNum)) {
          setActive(false);
          setTimeLeft(null);
-         setWasActive(false);
          return;
       }
 
@@ -130,15 +100,8 @@ const Earnings = () => {
          const diff = endTime - now;
 
          if (diff <= 0) {
-            if (processedTimerRef.current === startTime) return;
-            processedTimerRef.current = startTime;
             setTimeLeft(0);
             setActive(false);
-
-            // Only set wasActive if we haven't already processed this completion
-            if (!isProcessingClaim.current) {
-               setWasActive(true);
-            }
 
             if (intervalRef.current) {
                clearInterval(intervalRef.current);
@@ -146,20 +109,12 @@ const Earnings = () => {
             }
          } else {
             setTimeLeft(diff);
-            setWasActive(false);
          }
       };
 
-      // Initial update
       updateTimerState();
 
-      // Set up interval
       intervalRef.current = setInterval(updateTimerState, 1000);
-
-      // Mark as initialized after first render
-      if (!hasInitialized.current) {
-         hasInitialized.current = true;
-      }
 
       return () => {
          if (intervalRef.current) {
@@ -167,26 +122,12 @@ const Earnings = () => {
             intervalRef.current = null;
          }
       };
-   }, [loading, userData?.twentyFourHourTimerStart]); // Only depend on the timer value
-
-   function roundUpTo3Decimals(num: number) {
-      return Math.ceil(num * 1000) / 1000;
-   }
+   }, [loading, userData?.twentyFourHourTimerStart]);
 
    const handleTotalInvested = (param: UserPlan_Type[] = []) => param.reduce((total, plan) => {
       const price = Number(plan.price);
       return total + price;
    }, 0)
-
-   const handleDailyYield = (param: UserPlan_Type[] = []) => param.reduce((total, plan) => {
-      const price = Number(plan.daily_rate);
-      return total + price;
-   }, 0);
-
-   const handleROI = (param: UserPlan_Type[] = []) => param.reduce((total, plan) => {
-      const price = Number(plan.total_revenue);
-      return total + price;
-   }, 0);
 
    const handleMine = () => {
       if (userData?.ActivateBot) {
@@ -212,49 +153,9 @@ const Earnings = () => {
       }
    }, [userData])
 
-   const handleUseBalance = async () => {
-      if (isProcessingClaim.current) {
-         return; // Prevent double execution
-      }
-
-      isProcessingClaim.current = true;
-
-      try {
-         await mineAPI({ amount: handleDailyYield(userData?.currentPlan) });
-         await refreshUser();
-         showToast('success', 'Daily Yields Claimed successfully')
-      } catch (err) {
-         if (err instanceof AxiosError) {
-            showToast('error', err.response?.data.message)
-         } else {
-            showToast('error', 'An error occurred')
-         }
-      } finally {
-         isProcessingClaim.current = false;
-      }
-   };
-
-   // Set mining activated state
    useEffect(() => {
       setMiningActivated(active)
    }, [active])
-
-   // Handle completion with proper cleanup
-   useEffect(() => {
-      if (wasActive && !isProcessingClaim.current) {
-         const delay = setTimeout(() => {
-            handleUseBalance().then(() => {
-               updateTimer('').then(() => {
-                  setWasActive(false);
-                  setActive(false);
-               });
-            });
-         }, 500); // wait 500ms before executing
-
-         return () => clearTimeout(delay); // cleanup
-      }
-   }, [wasActive])
-
 
    const [transaction, setTransaction] = useState<UserTransaction[]>()
    const getTransaction = async (page: number = 1) => {
@@ -274,6 +175,7 @@ const Earnings = () => {
    useEffect(() => {
       getTransaction()
    }, [])
+
 
 
    return (

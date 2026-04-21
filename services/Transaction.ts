@@ -41,10 +41,8 @@ export async function getPlanAPI(details: {
    return res.data
 }
 
-export async function mineAPI(details: {
-   amount: number;
-}): Promise<number> {
-   const res = await authFetch.post("/transaction/mine", details)
+export async function mineAPI(): Promise<{ success: boolean }> {
+   const res = await authFetch.post("/transaction/mine")
    return res.data
 }
 
