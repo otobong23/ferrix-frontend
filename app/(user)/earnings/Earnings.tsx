@@ -102,6 +102,7 @@ const Earnings = () => {
          if (diff <= 0) {
             setTimeLeft(0);
             setActive(false);
+            refreshUser();
 
             if (intervalRef.current) {
                clearInterval(intervalRef.current);
