@@ -10,8 +10,9 @@ import { AxiosError } from 'axios';
 import { useUser } from '@/context/User.context';
 import { getTransactionsAPI, mineAPI } from '@/services/Transaction';
 
-const DURATION = 24 * 60 * 60 * 1000 //24 hours
-// const DURATION = 1 * 1 * 60 * 1000 //1 minutes
+const DURATION_24_HOURS = 24 * 60 * 60 * 1000, //24 hours
+DURATION_30_MINUTES = 30 * 60 * 1000;
+const DURATION = DURATION_30_MINUTES
 
 const formatTime = (ms: number | null) => {
    if (ms === null) return '--:--:--';
