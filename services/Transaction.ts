@@ -13,6 +13,7 @@ export async function createOrderAPI(details: {
    amount: number;
 }): Promise<{message: string, order: UserOrderType}> // promise of the deposit address
 {
+   console.log({ amount: details.amount })
    const res = await authFetch.post("/transaction/create", details)
    return res.data
 }
