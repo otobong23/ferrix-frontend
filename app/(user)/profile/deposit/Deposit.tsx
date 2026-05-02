@@ -104,7 +104,7 @@ const Deposit = () => {
                toast.error('Amount should be at least $15');
                return;
             }
-            createOrderMutation.mutate(Number(formState.amount) + (Number(formState.amount) * 0.015)); // Adding a 1.5% extra amount to cover transaction fees
+            createOrderMutation.mutate(Number(formState.amount)); // Adding a 1.5% extra amount to cover transaction fees
             return;
          }
 
@@ -133,10 +133,6 @@ const Deposit = () => {
       [handleFormState]
    );
 
-   const getFee = (network: 'BEP20' | 'TRC20') => {
-      if (network === 'BEP20') return 0.2    // $0.2 fee
-      else return 1     // $1 fee
-   }
 
    const isLoading =
       createOrderMutation.isPending || createDepositMutation.isPending;
