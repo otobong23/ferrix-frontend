@@ -122,7 +122,7 @@ const Transactions = () => {
                   <div key={item.type + index} className='flex flex-col py-2.5 px-5 bg-[#F5F5F7]/7 text-[#C3C3C3] gap-3 rounded-lg'>
                      <div className='flex justify-between'>
                         <h1 className='text-sm font-semibold mb-1 capitalize'>
-                           {item.type === 'tier' ? 'rebate' : item.type} {item.status === 'pending' ? 'pending' : item.status === 'completed' ? 'successful' : 'failed'}
+                           {  item.type} {item.status === 'pending' ? 'pending' : item.status === 'completed' ? 'successful' : 'failed'}
                         </h1>
                      </div>
 

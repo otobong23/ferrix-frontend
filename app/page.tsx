@@ -9,10 +9,9 @@ const page = () => {
   useEffect(() => {
     router.replace('/auth/login')
   })
-  // return (
-  //   <div>Landing Page</div>
-  // )
-  return null
+  return (
+    <div>Loading...</div>
+  )
 }
 
 export default page

@@ -86,7 +86,7 @@ const UpgradeLevel = () => {
                 {lvl.reached ? <span className="text-[#4DB6AC]">Reached</span> : <span className="text-investor-gold">In Progress</span>}
               </h2>
               <p className="text-base font-bold text-[#F5F5F7]">Requirements</p>
-              <p className="text-[#F5F5F7]">LV. {lvl.level} verified referrals Required: <span className='font-bold'>{level_1_referrals}/{lvl.requirements.referrals_required}</span></p>
+              <p className="text-[#F5F5F7]">LV. 1 verified referrals Required: <span className='font-bold'>{level_1_referrals}/{lvl.requirements.referrals_required}</span></p>
               <p className="text-[#F5F5F7]">Team Members Required: <span className='font-bold'>{total_referrals}/{lvl.requirements.team_members_required}</span></p>
               <p className="text-[#F5F5F7]">Reward: <span className='font-bold'>{lvl.requirements.reward.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span></p>
             </div>

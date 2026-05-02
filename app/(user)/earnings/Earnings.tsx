@@ -12,7 +12,7 @@ import { getTransactionsAPI, mineAPI } from '@/services/Transaction';
 
 const DURATION_24_HOURS = 24 * 60 * 60 * 1000, //24 hours
 DURATION_30_MINUTES = 30 * 60 * 1000;
-const DURATION = DURATION_30_MINUTES
+const DURATION = DURATION_24_HOURS
 
 const formatTime = (ms: number | null) => {
    if (ms === null) return '--:--:--';
