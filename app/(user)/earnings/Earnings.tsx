@@ -42,7 +42,7 @@ const Earnings = () => {
    const updateTimer = async () => {
       try {
          const response = await mineAPI()
-         refreshUser();
+         await refreshUser();
       } catch (err) {
          if (err instanceof AxiosError) {
             showToast('error', err.response?.data.message)
@@ -103,7 +103,6 @@ const Earnings = () => {
          if (diff <= 0) {
             setTimeLeft(0);
             setActive(false);
-            refreshUser();
 
             if (intervalRef.current) {
                clearInterval(intervalRef.current);
