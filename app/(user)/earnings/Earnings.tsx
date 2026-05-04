@@ -11,7 +11,7 @@ import { useUser } from '@/context/User.context';
 import { getTransactionsAPI, mineAPI } from '@/services/Transaction';
 
 const DURATION_24_HOURS = 24 * 60 * 60 * 1000, //24 hours
-DURATION_30_MINUTES = 30 * 60 * 1000;
+   DURATION_30_MINUTES = 30 * 60 * 1000;
 const DURATION = DURATION_24_HOURS
 
 const formatTime = (ms: number | null) => {
@@ -39,27 +39,30 @@ const Earnings = () => {
 
    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-   const updateTimer = async () => {
-      try {
-         const response = await mineAPI()
-         await refreshUser();
-      } catch (err) {
-         if (err instanceof AxiosError) {
-            showToast('error', err.response?.data.message)
-         } else {
-            showToast('error', 'An error occurred')
-         }
-      }
-   }
-
    const [active, setActive] = useState(false)
 
    const startTimer = useCallback(async () => {
       if (active) return;
-      setActive(true);
 
       try {
-         await updateTimer();
+         const response = await mineAPI();
+
+         const startTime = parseInt(response.startTime); // or response.data.startTime if returned
+
+         setActive(true);
+
+         const endTime = startTime + DURATION;
+
+         const updateTimerState = () => {
+            const diff = endTime - Date.now();
+            setTimeLeft(diff > 0 ? diff : 0);
+         };
+
+         updateTimerState();
+
+         if (intervalRef.current) clearInterval(intervalRef.current);
+         intervalRef.current = setInterval(updateTimerState, 1000);
+
          await refreshUser();
       } catch {
          setActive(false);
@@ -123,7 +126,7 @@ const Earnings = () => {
             intervalRef.current = null;
          }
       };
-   }, [loading, userData?.twentyFourHourTimerStart]);
+   }, [loading, userData]);
 
    const handleTotalInvested = (param: UserPlan_Type[] = []) => param.reduce((total, plan) => {
       const price = Number(plan.price);
@@ -157,26 +160,6 @@ const Earnings = () => {
    useEffect(() => {
       setMiningActivated(active)
    }, [active])
-
-   const [transaction, setTransaction] = useState<UserTransaction[]>()
-   const getTransaction = async (page: number = 1) => {
-      try {
-         const response = await getTransactionsAPI({ limit: 10, page });
-         setTransaction(response.transactions)
-      } catch (err) {
-         if (err instanceof AxiosError) {
-            console.log(err)
-            showToast('error', err.response?.data.message)
-         } else {
-            console.error(err)
-            showToast('error', 'An error occurred during signup')
-         }
-      }
-   }
-   useEffect(() => {
-      getTransaction()
-   }, [])
-
 
 
    return (
