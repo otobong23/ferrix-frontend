@@ -181,7 +181,7 @@ const Earnings = () => {
                </div>
 
                {/* Total balance */}
-               <h1 className="font-inria-sans font-bold leading-tight text-4xl lg:text-6xl">{balance.toLocaleString('en-US', { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 })}</h1>
+               <h1 className="font-inria-sans font-bold leading-tight text-4xl lg:text-6xl">{balance.toLocaleString('en-US', { style: "currency", currency: "USD" })}</h1>
 
                <div className='flex gap-16'>
                   <div>
@@ -214,7 +214,7 @@ const Earnings = () => {
                         </div>
                      </div>
 
-                     <button className='px-2.5 py-[5px] rounded-sm bg-[#F5F5F7]/7 mt-2 theme-button-effect'>Claim Commission</button>
+                     {/* <button className='px-2.5 py-[5px] rounded-sm bg-[#F5F5F7]/7 mt-2 theme-button-effect'>Claim Commission</button> */}
                   </div>
                </div>
             </div>
