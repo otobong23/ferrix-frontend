@@ -39,7 +39,7 @@ const Team = () => {
          if(level === 2) setMembers(crewData.members.level_2);
          if(level === 3) setMembers(crewData.members.level_3);
       }
-   },[crewData])
+   },[crewData, level])
 
    const handleCopy = (value: string, edit: Dispatch<SetStateAction<boolean>>) => {
       copy(value);
