@@ -21,7 +21,7 @@ const UpgradeLevel = () => {
       setLevel_1_referrals(userData?.referral_reward_count ?? 0)
       setTotal_referrals(crewData.totalMembers)
     }
-  }, [crewData])
+  }, [crewData, userData])
   
   const levels = useMemo(() => [
   {
