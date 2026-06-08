@@ -26,29 +26,26 @@ const UpgradeLevel = () => {
   const levels = useMemo(() => [
   {
     level: 1,
-    reached: level_1_referrals >= 10 && total_referrals >= 50,
+    reached: level_1_referrals >= 10,
     requirements: {
       referrals_required: 10,
-      team_members_required: 50,
-      reward: 10
+      reward: 5
     }
   },
   {
     level: 2,
-    reached: level_1_referrals >= 30 && total_referrals >= 100,
+    reached: level_1_referrals >= 30,
     requirements: {
       referrals_required: 30,
-      team_members_required: 100,
-      reward: 30
+      reward: 10
     }
   },
   {
     level: 3,
-    reached: level_1_referrals >= 50 && total_referrals >= 200,
+    reached: level_1_referrals >= 50,
     requirements: {
       referrals_required: 50,
-      team_members_required: 200,
-      reward: 100
+      reward: 15
     }
   }
 ], [level_1_referrals, total_referrals]);
@@ -87,7 +84,6 @@ const UpgradeLevel = () => {
               </h2>
               <p className="text-base font-bold text-[#F5F5F7]">Requirements</p>
               <p className="text-[#F5F5F7]">LV. 1 verified referrals Required: <span className='font-bold'>{level_1_referrals}/{lvl.requirements.referrals_required}</span></p>
-              <p className="text-[#F5F5F7]">Team Members Required: <span className='font-bold'>{total_referrals}/{lvl.requirements.team_members_required}</span></p>
               <p className="text-[#F5F5F7]">Reward: <span className='font-bold'>{lvl.requirements.reward.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span></p>
             </div>
           </div>
