@@ -18,7 +18,7 @@ const UpgradeLevel = () => {
 
   useEffect(() => {
     if(crewData) {
-      setLevel_1_referrals(userData?.referral_reward_count ?? 0)
+      setLevel_1_referrals(userData?.referral_count ?? 0)
       setTotal_referrals(crewData.totalMembers)
     }
   }, [crewData, userData])
