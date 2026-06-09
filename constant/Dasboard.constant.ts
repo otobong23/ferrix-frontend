@@ -66,5 +66,5 @@ export const security_center = [
 
 export const help_center = [
    { name: 'Message Center', href: 'https://wa.me/447853159845', icon: 'mdi:message' },
-   { name: 'Call Customer Care', href: 'https://t.me/FERRIXAGENT011', icon: 'ri:customer-service-fill' },
+   { name: 'Customer Care', href: 'https://t.me/FerrixAgent001', icon: 'ri:customer-service-fill' },
 ]
