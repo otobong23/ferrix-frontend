@@ -29,7 +29,7 @@ export const products = [
       image: f1_image
    },
    {
-      name: "Copper Seed",
+      name: "Copper Seed V2",
       package_level: "Entry-level packages",
       price: 350,
       contract_duration_in_days: 70,
