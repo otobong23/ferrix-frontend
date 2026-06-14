@@ -1,32 +1,75 @@
 'use client';
 import { useAdmin } from '@/context/Admin.context';
-import { getCrewsAPI, getUsersAPI } from '@/services/Admin';
+import { getCrewsAPI, getUsersAPI, searchCrewAPI, searchUserAPI } from '@/services/Admin';
+import { showToast } from '@/utils/alert';
 import { Icon } from '@iconify-icon/react';
+import { AxiosError } from 'axios';
 import Link from 'next/link';
 import React, { useCallback, useEffect, useState } from 'react'
 
 const Control = () => {
    const { adminData } = useAdmin()
    const [tier, setTier] = useState<'team' | 'users'>('team')
+   const [searching, setSearching] = useState(false);
+   const [keyword, setKeyword] = useState('');
    const handleTier = useCallback((selectTier: 'team' | 'users') => {
       setTier(selectTier)
    }, [])
    const isActiveTier = (checkTier: 'team' | 'users') => tier === checkTier;
 
    const [Crews, setCrews] = useState<Array<CrewType>>([])
+   const [originalCrews, setOriginalCrews] = useState<Array<CrewType>>([])
 
    const [users, setUsers] = useState<Array<UserType>>([])
+   const [originalUsers, setOriginalUsers] = useState<Array<UserType>>([])
 
    useEffect(() => {
       const fetchData = async () => {
          const getCrews = await getCrewsAPI()
          setCrews(getCrews.crews)
+         setOriginalCrews(getCrews.crews)
 
          const getUsers = await getUsersAPI()
          setUsers(getUsers.users)
+         setOriginalUsers(getUsers.users)
       }
       fetchData()
    }, [adminData])
+
+
+   const handleSearch = async () => {
+      if (!keyword.trim()) return;
+      setSearching(true);
+
+      if(tier === "users"){
+         try {
+            const res = await searchUserAPI(keyword);
+            setUsers(res);
+         } catch (err) {
+            setUsers([]);
+            if (err instanceof AxiosError) {
+               showToast('error', err.response?.data.message);
+            }
+         }
+      } else {
+         try {
+            const res = await searchCrewAPI(keyword);
+            setCrews(res);
+         } catch (err) {
+            setCrews([]);
+            if (err instanceof AxiosError) {
+               showToast('error', err.response?.data.message);
+            }
+         }
+      }
+   };
+
+   const resetSearch = () => {
+      setKeyword('');
+      setUsers(originalUsers);
+      setCrews(originalCrews)
+      setSearching(false);
+   };
 
    return (
       <div>
@@ -40,6 +83,18 @@ const Control = () => {
                   <Icon icon="iconamoon:profile-fill" className="text-2xl text-[#0000004D] leading-tight" />
                </button>
             </div>
+         </div>
+
+         <div className='max-w-[652px] flex p-[13px] gap-5 items-center border border-[#F5F5F7]/8 mx-4 rounded-[15px]'>
+            {!searching && <button onClick={handleSearch}>
+               <Icon icon="material-symbols:search" className='text-xl text' />
+            </button>}
+            {searching && (
+               <button onClick={resetSearch} className='text-sm font-medium'>
+                  <Icon icon="humbleicons:times" className='text-xl' />
+               </button>
+            )}
+            <input type="text" placeholder='Search' className='text-lg w-full outline-none border-0' value={keyword} onChange={(e) => setKeyword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} />
          </div>
 
          <div className='py-5 px-10 flex items-center gap-10 lg:gap-2.5 lg:w-[392px] mx-auto'>

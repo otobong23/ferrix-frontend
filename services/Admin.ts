@@ -24,7 +24,7 @@ export async function getTotalUsersCountAPI(): Promise<number> {
   return res.data
 }
 
-export async function getUsersAPI(limit = 50, page = 1): Promise<{
+export async function getUsersAPI(limit = 200, page = 1): Promise<{
   users: UserType[],
   page: number;
   limit: number;
@@ -50,7 +50,7 @@ export async function getUserByUserIdAPI(userID: string): Promise<UserType> {
   return res.data
 }
 
-export async function searchUserAPI(keyword: string): Promise<UserType> {
+export async function searchUserAPI(keyword: string): Promise<Array<UserType>> {
   const res = await authFetch.get(`/admin/search/users?keyword=${keyword}`)
   return res.data
 }
@@ -61,7 +61,7 @@ export async function getTotalCrewCountAPI(): Promise<number> {
   return res.data
 }
 
-export async function getCrewsAPI(limit = 100, page = 1): Promise<{
+export async function getCrewsAPI(limit = 200, page = 1): Promise<{
   crews: CrewType[],
   page: number;
   limit: number;
@@ -77,7 +77,7 @@ export async function getUserCrewAPI(userID: string): Promise<CrewType> {
   return res.data
 }
 
-export async function searchCrewAPI(keyword: string): Promise<CrewType> {
+export async function searchCrewAPI(keyword: string): Promise<Array<CrewType>> {
   const res = await authFetch.get(`/admin/search/crews?keyword=${keyword}`)
   return res.data
 }
