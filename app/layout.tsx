@@ -24,7 +24,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Ferrix App",
-  description: "Ferrix app used for investment purposes",
+  description: "Ferrix app used for Business purposes",
 };
 
 export default function RootLayout({
