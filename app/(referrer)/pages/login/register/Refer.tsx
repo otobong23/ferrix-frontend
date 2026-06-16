@@ -5,9 +5,9 @@ import { useEffect } from 'react'
 const Refer = () => {
    const router = useRouter()
    const searchParams = useSearchParams();
-   const refCode = searchParams.get('invite');
+   const refCode = searchParams.get('ref');
    useEffect(() => {
-      router.replace(`/auth/signup?invite=${refCode}`)
+      router.replace(`/auth/signup?ref=${refCode}`)
    })
    return null
 }

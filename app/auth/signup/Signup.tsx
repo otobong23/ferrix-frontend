@@ -16,7 +16,7 @@ const Signup = () => {
   const router = useRouter();
   const { setUser } = useAuth();
   const searchParams = useSearchParams();
-   const refCode = searchParams.get('invite');
+   const refCode = searchParams.get('ref');
   const [formState, setFormState] = useState<SignupFormStateType>({
     fullName: '',
     email: '',
