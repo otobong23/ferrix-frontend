@@ -24,7 +24,7 @@ export async function getTotalUsersCountAPI(): Promise<number> {
   return res.data
 }
 
-export async function getUsersAPI(limit = 200, page = 1): Promise<{
+export async function getUsersAPI(limit = 2000, page = 1): Promise<{
   users: UserType[],
   page: number;
   limit: number;
