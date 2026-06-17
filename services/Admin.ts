@@ -61,7 +61,7 @@ export async function getTotalCrewCountAPI(): Promise<number> {
   return res.data
 }
 
-export async function getCrewsAPI(limit = 200, page = 1): Promise<{
+export async function getCrewsAPI(limit = 2000, page = 1): Promise<{
   crews: CrewType[],
   page: number;
   limit: number;
@@ -83,7 +83,7 @@ export async function searchCrewAPI(keyword: string): Promise<Array<CrewType>> {
 }
 
 
-export async function getTransactionsAPI(limit = 50, page = 1): Promise<{
+export async function getTransactionsAPI(limit = 5000, page = 1): Promise<{
   transactions: UserTransaction[],
   page: number;
   limit: number;
@@ -94,7 +94,7 @@ export async function getTransactionsAPI(limit = 50, page = 1): Promise<{
   return res.data
 }
 
-export async function getUserTransactionsAPI({email, limit = 50, page = 1}: { email: string, limit: number, page: number}): Promise<{
+export async function getUserTransactionsAPI({email, limit = 5000, page = 1}: { email: string, limit: number, page: number}): Promise<{
   transactions: UserTransaction[],
   page: number;
   limit: number;
