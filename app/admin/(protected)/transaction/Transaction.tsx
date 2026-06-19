@@ -8,6 +8,7 @@ import copy from 'copy-to-clipboard';
 import { getTransactionsAPI, updateUserTransactionAPI } from "@/services/Admin";
 import Link from "next/link";
 import { useAdmin } from "@/context/Admin.context";
+import Pagination from "@/components/Pagination";
 
 const formatTime = (timestamp: string | number) => {
   const date = new Date(timestamp);
@@ -221,6 +222,18 @@ const Transaction = () => {
           <p className="text-center text-sm text-white/60">No Transaction Found yet.</p>
         )}
       </div>
+
+      {/* ── pagination ── */}
+      {!loading && totalPages > 1 && (
+        <Pagination
+          currentPage={currentTransactionPage}
+          totalPages={totalPages}
+          total={totalTransaction}
+          loading={loading}
+          onPrev={() => fetchTransactions(currentTransactionPage - 1, activeFilter)}
+          onNext={() => fetchTransactions(currentTransactionPage + 1, activeFilter)}
+        />
+      )}
     </div>
   );
 };
