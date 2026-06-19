@@ -16,7 +16,7 @@ const Pagination = ({
   onPrev: () => void;
   onNext: () => void;
 }) => (
-  <div className="flex items-center justify-between gap-2 mt-4 px-4 py-3 border-t border-white/10 max-w-[649px] mx-auto">
+  <div className="flex items-center justify-between gap-2 my-4 px-4 py-3 border-t border-white/10 max-w-[649px] mx-auto">
     <button
       onClick={onPrev}
       disabled={currentPage <= 1 || loading}

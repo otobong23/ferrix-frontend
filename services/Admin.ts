@@ -95,7 +95,7 @@ export async function searchCrewAPI(keyword: string): Promise<Array<CrewType>> {
 // }
 
 export async function getTransactionsAPI(
-  limit = 60,
+  limit = 50,
   page = 1,
   type?: string,
   status?: string
