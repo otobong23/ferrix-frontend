@@ -83,15 +83,34 @@ export async function searchCrewAPI(keyword: string): Promise<Array<CrewType>> {
 }
 
 
-export async function getTransactionsAPI(limit = 5000, page = 1): Promise<{
-  transactions: UserTransaction[],
+// export async function getTransactionsAPI(limit = 50, page = 1): Promise<{
+//   transactions: UserTransaction[],
+//   page: number;
+//   limit: number;
+//   total: number;
+//   totalPages: number;
+// }> {
+//   const res = await authFetch.get(`/admin/transactions?limit=${limit}&page=${page}`)
+//   return res.data
+// }
+
+export async function getTransactionsAPI(
+  limit = 10,
+  page = 1,
+  type?: string,
+  status?: string
+): Promise<{
+  transactions: UserTransaction[];
   page: number;
   limit: number;
   total: number;
   totalPages: number;
 }> {
-  const res = await authFetch.get(`/admin/transactions?limit=${limit}&page=${page}`)
-  return res.data
+  const params = new URLSearchParams({ limit: String(limit), page: String(page) });
+  if (type) params.append('type', type);
+  if (status) params.append('status', status);
+  const res = await authFetch.get(`/admin/transactions?${params.toString()}`);
+  return res.data;
 }
 
 export async function getUserTransactionsAPI({email, limit = 5000, page = 1}: { email: string, limit: number, page: number}): Promise<{
