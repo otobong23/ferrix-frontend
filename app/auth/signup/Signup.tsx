@@ -49,7 +49,7 @@ const Signup = () => {
     onError: (error: any) => {
       // Handle error
       console.error('Signup error:', error);
-      const errorMessage = error?.response?.data?.message || error?.message || 'Signup failed. Please try again.';
+      const errorMessage = error?.response?.data?.message || error?.reponse.message || error?.message || 'Signup failed. Please try again.';
       showToast('error',errorMessage);
     },
   });
