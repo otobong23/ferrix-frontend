@@ -276,7 +276,7 @@ const Pending = ({ email, image, type, amount, updatedAt, handleClick, _id, wall
         </div>
         <div className={`flex flex-col gap-2 mt-5 justify-end max-w-full overflow-hidden transition-all duration-300 ${toggle ? 'max-h-40' : 'max-h-0'}`}>
           {displayAmount && type == "withdrawal" && (<div className='flex text-[#F5F5F7] overflow-hidden'>
-            <p className='w-[250px] relative truncate'>Pay Amount: <span>{displayAmount}</span></p>
+            <p className='w-[250px] relative truncate'>Pay Amount: $<span>{displayAmount}</span></p>
             <button className='cursor-pointer' onClick={() => oncopy(String(displayAmount))}>
               <Icon icon='akar-icons:copy' className='text-[20px]' />
             </button>
