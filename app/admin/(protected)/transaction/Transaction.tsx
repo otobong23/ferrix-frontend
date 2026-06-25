@@ -252,7 +252,7 @@ const Done = ({ email, userId, type, amount, updatedAt, status }: { email: strin
     <div className='w-full'>
       <h1 className='font-semibold capitalize text-[#F5F5F7]'>{type}</h1>
       <p className='text-[#F5F5F7]/50'>{email}</p>
-      {userId && <p className='text-[#F5F5F7]/50'>userId: {userId}</p>}
+      {userId && <Link href={`/admin/control/users/${userId}`} className='text-[#F5F5F7]/50 underline'>userId: {userId}</Link>}
       <div className='flex flex-col justify-between text-[#F5F5F7]/50'>
         <p>{type} | ${amount} {status === 'failed' && <span className='text-[#F94E4E] ml-3'>Rejected</span>}</p>
         <p>{formatTime(updatedAt)}</p>
@@ -273,7 +273,7 @@ const Pending = ({ email, userId, image, type, amount, updatedAt, handleClick, _
           <span><Icon icon='tabler:chevron-down' className={`text-2xl text-[#F5F5F7] transition-all duration-300 ${toggle ? 'rotate-180' : 'rotate-0'}`} /></span>
         </div>
         <p className='text-[#F5F5F7]/50'>{email}</p>
-        {userId && <p className='text-[#F5F5F7]/50'>userId: {userId}</p>}
+        {userId && <Link href={`/admin/control/users/${userId}`} className='text-[#F5F5F7]/50 underline'>userId: {userId}</Link>}
         <div className='flex flex-col justify-between text-[#F5F5F7]/50'>
           <p>{type} | ${amount} <span className='text-[#F59E0B] ml-3'>Pending</span></p>
           <p>{formatTime(updatedAt)}</p>
