@@ -5,6 +5,7 @@ interface UserTransaction {
   _id: string;
   transactionID?: string;
   email: string;
+  userId?: string;
   type: TransactionType;
   amount: number;
   displayAmount: number;

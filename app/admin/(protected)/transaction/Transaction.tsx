@@ -197,6 +197,7 @@ const Transaction = () => {
                 _id={a._id}
                 handleClick={handlebutton}
                 email={a.email}
+                userId={a.userId ?? ''}
                 type={a.type}
                 displayAmount={a.displayAmount}
                 amount={a.amount}
@@ -212,6 +213,7 @@ const Transaction = () => {
               <Done
                 key={a.email + i}
                 email={a.email}
+                userId={a.userId ?? ''}
                 type={a.type}
                 amount={a.amount}
                 updatedAt={a.updatedAt ?? ''}
@@ -242,7 +244,7 @@ const Transaction = () => {
 export default Transaction;
 
 
-const Done = ({ email, type, amount, updatedAt, status }: { email: string, type: string, amount: number, updatedAt: string, status: 'completed' | 'failed' }) => (
+const Done = ({ email, userId, type, amount, updatedAt, status }: { email: string, userId?: string, type: string, amount: number, updatedAt: string, status: 'completed' | 'failed' }) => (
   <div className='px-[25px] py-2.5 rounded-[15px] bg-white/7 flex items-center gap-3'>
     <div>
       {status === 'completed' ? <Icon icon='ion:checkmark-done-circle' className='text-[#6EBA0E] text-3xl' /> : <Icon icon='material-symbols:sms-failed' className='text-[#F94E4E] text-3xl' />}
@@ -250,6 +252,7 @@ const Done = ({ email, type, amount, updatedAt, status }: { email: string, type:
     <div className='w-full'>
       <h1 className='font-semibold capitalize text-[#F5F5F7]'>{type}</h1>
       <p className='text-[#F5F5F7]/50'>{email}</p>
+      {userId && <p className='text-[#F5F5F7]/50'>{userId}</p>}
       <div className='flex flex-col justify-between text-[#F5F5F7]/50'>
         <p>{type} | ${amount} {status === 'failed' && <span className='text-[#F94E4E] ml-3'>Rejected</span>}</p>
         <p>{formatTime(updatedAt)}</p>
@@ -257,7 +260,7 @@ const Done = ({ email, type, amount, updatedAt, status }: { email: string, type:
     </div>
   </div>
 )
-const Pending = ({ email, image, type, amount, updatedAt, handleClick, _id, walletAddress = '', accountName = '', accountNumber = '', bankName = '', oncopy, transactionID, displayAmount }: { email: string, image: string, type: string, amount: number, updatedAt: string, handleClick: (params: 'approve' | 'decline', _id: string, amount: number, email: string, action: 'add' | 'minus') => void, _id: string, walletAddress?: string, accountName?: string, accountNumber?: string, bankName?: string, oncopy: (text: string) => void, transactionID: string, displayAmount?: number }) => {
+const Pending = ({ email, userId, image, type, amount, updatedAt, handleClick, _id, walletAddress = '', accountName = '', accountNumber = '', bankName = '', oncopy, transactionID, displayAmount }: { email: string, userId?: string, image: string, type: string, amount: number, updatedAt: string, handleClick: (params: 'approve' | 'decline', _id: string, amount: number, email: string, action: 'add' | 'minus') => void, _id: string, walletAddress?: string, accountName?: string, accountNumber?: string, bankName?: string, oncopy: (text: string) => void, transactionID: string, displayAmount?: number }) => {
   const [toggle, setToggle] = useState(false)
   return (
     <div className='px-[25px] py-2.5 rounded-[15px] bg-white/7 flex items-center gap-3 transition-all duration-300'>
@@ -270,6 +273,7 @@ const Pending = ({ email, image, type, amount, updatedAt, handleClick, _id, wall
           <span><Icon icon='tabler:chevron-down' className={`text-2xl text-[#F5F5F7] transition-all duration-300 ${toggle ? 'rotate-180' : 'rotate-0'}`} /></span>
         </div>
         <p className='text-[#F5F5F7]/50'>{email}</p>
+        {userId && <p className='text-[#F5F5F7]/50'>{userId}</p>}
         <div className='flex flex-col justify-between text-[#F5F5F7]/50'>
           <p>{type} | ${amount} <span className='text-[#F59E0B] ml-3'>Pending</span></p>
           <p>{formatTime(updatedAt)}</p>
