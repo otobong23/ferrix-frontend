@@ -3,14 +3,16 @@
 import { Icon } from '@iconify-icon/react'
 import Image from 'next/image'
 import f3 from '@/assets/imgs/f3.png'
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useCrewData } from '@/context/Crew.context';
 import copy from 'copy-to-clipboard';
 import { showToast } from '@/utils/alert';
+import { useUser } from '@/context/User.context';
 
 const Team = () => {
    const { crewData } = useCrewData()
+   const { userData } = useUser()
    const [referralCode, setReferralCode] = useState<string>('')
    const [level, setLevel] = useState<number>(1)
    const handleLevel = useCallback((lvl: number) => { setLevel(lvl) }, [])
@@ -22,24 +24,24 @@ const Team = () => {
    })
 
    useEffect(() => {
-      if(crewData) {
+      if (crewData) {
          setReferralCode(crewData.ownerReferralCode)
          setReferrals({
             Total_Referral: crewData.totalMembers,
             Commission_Count: 0
          })
       }
-   },[crewData])
+   }, [crewData])
 
    const [members, setMembers] = useState<CrewMemberType[]>([])
 
    useEffect(() => {
-      if(crewData) {
-         if(level === 1) setMembers(crewData.members.level_1);
-         if(level === 2) setMembers(crewData.members.level_2);
-         if(level === 3) setMembers(crewData.members.level_3);
+      if (crewData) {
+         if (level === 1) setMembers(crewData.members.level_1);
+         if (level === 2) setMembers(crewData.members.level_2);
+         if (level === 3) setMembers(crewData.members.level_3);
       }
-   },[crewData, level])
+   }, [crewData, level])
 
    const handleCopy = (value: string, edit: Dispatch<SetStateAction<boolean>>) => {
       copy(value);
@@ -48,13 +50,58 @@ const Team = () => {
       setTimeout(() => edit(false), 2000);
    };
 
+
+   const [level_1_referrals, setLevel_1_referrals] = useState(0)
+   const [total_referrals, setTotal_referrals] = useState(0)
+
+   useEffect(() => {
+      if (crewData) {
+         setLevel_1_referrals(userData?.referral_reward_count ?? 0)
+         setTotal_referrals(crewData.totalMembers)
+      }
+   }, [crewData, userData])
+
+   const levels = useMemo(() => [
+      {
+         level: 1,
+         reached: level_1_referrals >= 10,
+         requirements: {
+            referrals_required: 10,
+            reward: 5
+         }
+      },
+      {
+         level: 2,
+         reached: level_1_referrals >= 30,
+         requirements: {
+            referrals_required: 30,
+            reward: 10
+         }
+      },
+      {
+         level: 3,
+         reached: level_1_referrals >= 50,
+         requirements: {
+            referrals_required: 50,
+            reward: 15
+         }
+      }
+   ], [level_1_referrals, total_referrals]);
+
+   const getLevel = useCallback(() => {
+      if (levels[2].reached) return levels[2].level
+      else if (levels[1].reached) return levels[1].level
+      else if (levels[0].reached) return levels[0].level
+      else return 0
+   }, [level_1_referrals, total_referrals])
+
    return (
       <div className=''>
          <div className='flex bg-[#44474F] rounded-lg m-4'>
             <div className='flex-1 p-4'>
                <div className='flex items-center'>
                   <Icon icon="solar:money-bag-bold" className='text-[#4DB6AC] mr-1' />
-                  <span>Current Lv.</span>
+                  <span>Current Lv.{getLevel()}</span>
                </div>
 
                <h1 className='font-inria-sans font-bold text-5xl mt-1 mb-4'>LV.0</h1>
@@ -111,8 +158,8 @@ const Team = () => {
                      )
                   })
                }
-            </div>   
-            
+            </div>
+
             <p className='text-center pb-3 text-[#44474F]'>{level == 1 ? 5 : level == 2 ? 2 : 1}%</p>
 
             <div className='flex flex-col gap-2'>

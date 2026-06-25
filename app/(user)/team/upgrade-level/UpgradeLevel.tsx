@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import c2 from '@/assets/imgs/c2.png'
 import f1_image from '@/assets/imgs/f1.png';
 import { useCrewData } from '@/context/Crew.context';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useUser } from '@/context/User.context';
 
 
@@ -17,38 +17,45 @@ const UpgradeLevel = () => {
   const [total_referrals, setTotal_referrals] = useState(0)
 
   useEffect(() => {
-    if(crewData) {
+    if (crewData) {
       setLevel_1_referrals(userData?.referral_reward_count ?? 0)
       setTotal_referrals(crewData.totalMembers)
     }
   }, [crewData, userData])
-  
+
   const levels = useMemo(() => [
-  {
-    level: 1,
-    reached: level_1_referrals >= 10,
-    requirements: {
-      referrals_required: 10,
-      reward: 5
+    {
+      level: 1,
+      reached: level_1_referrals >= 10,
+      requirements: {
+        referrals_required: 10,
+        reward: 5
+      }
+    },
+    {
+      level: 2,
+      reached: level_1_referrals >= 30,
+      requirements: {
+        referrals_required: 30,
+        reward: 10
+      }
+    },
+    {
+      level: 3,
+      reached: level_1_referrals >= 50,
+      requirements: {
+        referrals_required: 50,
+        reward: 15
+      }
     }
-  },
-  {
-    level: 2,
-    reached: level_1_referrals >= 30,
-    requirements: {
-      referrals_required: 30,
-      reward: 10
-    }
-  },
-  {
-    level: 3,
-    reached: level_1_referrals >= 50,
-    requirements: {
-      referrals_required: 50,
-      reward: 15
-    }
-  }
-], [level_1_referrals, total_referrals]);
+  ], [level_1_referrals, total_referrals]);
+
+  const getLevel = useCallback(() => {
+    if (levels[2].reached) return levels[2].level
+    else if (levels[1].reached) return levels[1].level
+    else if (levels[0].reached) return levels[0].level
+    else return 0
+  }, [level_1_referrals, total_referrals])
 
   return (
     <div>
@@ -59,7 +66,7 @@ const UpgradeLevel = () => {
             <span>Back</span>
           </button>
 
-          <h1 className='font-inria-sans font-bold text-5xl mt-1 mb-2'>LV.0</h1>
+          <h1 className='font-inria-sans font-bold text-5xl mt-1 mb-2'>LV.{getLevel()}</h1>
 
           <p className='text-[#9EA4AA]'>Meet Target and Grow</p>
         </div>
