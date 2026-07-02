@@ -29,6 +29,7 @@ const EditBalance = () => {
    useEffect(() => {
       if (!user) return;
       setAmount(user.balance);
+      setTotalDeposit(user.totalDeposit);
    }, [user])
 
 
