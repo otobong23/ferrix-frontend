@@ -12,6 +12,7 @@ const EditBalance = () => {
    const { adminData } = useAdmin()
    const router = useRouter()
    const [amount, setAmount] = useState<number>(0)
+   const [totaldeposit, setTotalDeposit] = useState<number>(0)
    const { user_id } = useParams()
 
    const [user, setUser] = useState<UserType | null>(null)
@@ -39,6 +40,7 @@ const EditBalance = () => {
          if (!user) throw new Error('User is null');
          return updateUserByAdminAPI(user?.email, {
             balance: amount,
+            totalDeposit: totaldeposit
          })
       },
 
@@ -96,8 +98,16 @@ const EditBalance = () => {
                   <input type="number" value={amount} required={true} onChange={(e: ChangeEvent<HTMLInputElement>) => setAmount(Number(e.target.value))} name="amount" id="amount" className='outline-0 border border-[#9EA4AA] pr-3.5 pl-8 py-3 rounded-xl placeholder:text-[#62686E] text-xl text-[#F5F5F7] w-full' placeholder="Enter Deposit Amount" />
                </div>
             </div>
-
             <p className="px-2.5 py-3.5 rounded-sm bg-[#F5F5F7]/7 my-5">Amount in the edit field is the user current Original Balance</p>
+
+            <div className='flex flex-col gap-2 mt-5'>
+               <label htmlFor="totaldeposit" className='text-xl text-[#F5F5F7]'>Current Total Deposit</label>
+               <div className="relative before:content-['$'] before:absolute before:left-3 before:top-3 before:text-xl before:text-[#F5F5F7] before:focus:text-[#62686E]">
+                  <input type="number" value={totaldeposit} required={false} onChange={(e: ChangeEvent<HTMLInputElement>) => setTotalDeposit(Number(e.target.value))} name="totaldeposit" id="totaldeposit" className='outline-0 border border-[#9EA4AA] pr-3.5 pl-8 py-3 rounded-xl placeholder:text-[#62686E] text-xl text-[#F5F5F7] w-full' placeholder="Enter Total Deposit Amount" />
+               </div>
+            </div>
+            <p className="px-2.5 py-3.5 rounded-sm bg-[#F5F5F7]/7 my-5">Amount in the edit field is the user current Original Total Deposit</p>
+
             <button
                type="submit"
                disabled={updateProfileMutation.isPending}
